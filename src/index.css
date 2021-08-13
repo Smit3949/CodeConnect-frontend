@@ -1,13 +1,100 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body,html{
+  overflow: hidden;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.playground {
+  height: 100%;
+  background-color: #1e1e25;
+}
+
+
+.code-editor {
+  height: 33%;
+  overflow: hidden;
+  position: relative;
+}
+
+.editor-header {
+  height: 30px;
+  content: attr(title);
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  font-size: 18px;
+  color: #fafafa;
+}
+
+.react-codemirror2 {
+  max-height: calc(100% - 30px);
+  overflow: auto;
+}
+
+.result {
+  /* position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 600px; */
+  /* overflow: hidden; */
+}
+
+video {
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+}
+
+/* resizable panels */
+
+.panel-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.panel {
+  background: white;
+  border: 1px solid gray;
+}
+.panel:first-child {
+
+}
+
+.resizer {
+  width: 100%;
+  height: 8px;
+  background: darkGray;
+  position: relative;
+  cursor: row-resize;
+  flex-shrink: 0;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */ 
+}
+
+.resizer::after,
+.resizer::before {
+  content: "";
+  border-left: 1px solid #333;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-100%);
+  right: 0;
+  display: inline-block;
+  height: 20px;
+  margin: 0 2px;
+}
+.resizer::before {
+  left: 0;
+}
+
+
+/* override classes */
+.CodeMirror{
+  height: 100% !important;
 }
