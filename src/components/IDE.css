@@ -1,0 +1,13 @@
+
+  .colors {
+    position: fixed;
+  }
+  
+  .color {
+    display: inline-block;
+    height: 48px;
+    width: 48px;
+  }
+  
+  .color.black { background-color: black; }
+  .color.red { background-color: white; }
