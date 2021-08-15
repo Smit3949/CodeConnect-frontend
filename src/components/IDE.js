@@ -21,7 +21,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import { v4 as uuidV4 } from 'uuid';
 
 
-export default function IDE({ modal, toggleModal, setModal, python, setpython, input, setInput, selected, setSelected, output, setOutput, textEditor, setTextEditor, processing, setProcessing, percentageStage, setPercentageStage }) {
+export default function IDE({ modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage }) {
     const [DocId, setDocId] = useState(null);
     const [socket, setSocket] = useState(null);
     const [cpp, setcpp] = useState('');
@@ -30,7 +30,9 @@ export default function IDE({ modal, toggleModal, setModal, python, setpython, i
     const username = 'smit'
     const videoGrid = document.getElementById('video-grid');
     const myVideo = document.createElement('video');
-    myVideo.className = "rounded mb-4"
+    const myVideoCont = document.createElement('div');
+    myVideoCont.appendChild(myVideo);
+    myVideoCont.className = "videoContainer rounded mb-4"
     myVideo.muted = true;
     const [myStream, setMystream] = useState(null);
     const peers = {};
@@ -109,12 +111,12 @@ export default function IDE({ modal, toggleModal, setModal, python, setpython, i
     }, [socket, cpp, java, python]);
 
 
-    function addVideoStream(video, stream) {
+    function addVideoStream(videoCont, video, stream) {
         video.srcObject = stream;
         video.addEventListener('loadedmetadata', () => {
             video.play();
         })
-        videoGrid.append(video);
+        videoGrid.append(videoCont);
     };
 
     useEffect(() => {
@@ -124,20 +126,24 @@ export default function IDE({ modal, toggleModal, setModal, python, setpython, i
             video: true,
             audio: true
         }).then(stream => {
-            addVideoStream(myVideo, stream);
+            addVideoStream(myVideoCont, myVideo, stream);
             setMyvideoon(true);
             setMystream(stream);
             peer.on('call', call => {
                 console.log(call);
                 call.answer(stream);
                 const video = document.createElement('video');
-                video.className = "rounded mb-4";
+                const videoCont = document.createElement('div');
+                videoCont.appendChild(video);
+                videoCont.id = call.peer;
+                videoCont.className = "videoContainer rounded mb-4";
                 call.on('stream', (anotherUserVideoStream) => {
-                    addVideoStream(video, anotherUserVideoStream);
+                    addVideoStream(videoCont, video, anotherUserVideoStream);
                 });
 
                 call.on('close', () => {
                     video.remove();
+                    videoCont.remove();
                 });
                 console.log(call);
                 peers[call.peer] = call;
@@ -148,16 +154,20 @@ export default function IDE({ modal, toggleModal, setModal, python, setpython, i
                 // call.metadata.username = username;
                 console.log('user connected : ', username);
                 const video = document.createElement('video')
-                video.id = userId;
+                const videoCont = document.createElement('div');
+                videoCont.appendChild(video);
+                videoCont.id = userId;
                 video.username = username;
+                videoCont.className = "videoContainer rounded mb-4";
                 call.on('stream', (anotherUserVideoStream) => {
 
                     console.log(anotherUserVideoStream.getAudioTracks());
-                    addVideoStream(video, anotherUserVideoStream, username);
+                    addVideoStream(videoCont, video, anotherUserVideoStream);
                 });
 
                 call.on('close', () => {
                     video.remove();
+                    videoCont.remove();
                 });
                 peers[userId] = call;
             });
@@ -171,6 +181,7 @@ export default function IDE({ modal, toggleModal, setModal, python, setpython, i
 
         peer.on('open', (id) => {
             setUserId(id);
+            myVideoCont.id = id;
             socket.emit('join-room', DocId, id, username);
         });
         // eslint-disable-next-line
@@ -183,21 +194,25 @@ export default function IDE({ modal, toggleModal, setModal, python, setpython, i
             video: true,
             audio: true
         }).then(stream => {
-            addVideoStream(myVideo, stream);
+            addVideoStream(myVideoCont, myVideo, stream);
             setMyvideoon(true);
             setMystream(stream);
             replaceStream(stream);
             peer.on('call', call => {
                 call.answer(stream);
                 const video = document.createElement('video');
-                video.className = "rounded mb-4"
+                const videoCont = document.createElement('div');
+                videoCont.className = "videoContainer rounded mb-4"
+                videoCont.appendChild(video);
+                videoCont.id = call.peer;
 
                 call.on('stream', (anotherUserVideoStream) => {
-                    addVideoStream(video, anotherUserVideoStream);
+                    addVideoStream(videoCont, video, anotherUserVideoStream);
                 });
 
                 call.on('close', () => {
                     video.remove();
+                    videoCont.remove();
                 });
                 console.log(call);
                 peers[call.peer] = call;
@@ -207,15 +222,19 @@ export default function IDE({ modal, toggleModal, setModal, python, setpython, i
                 const call = peer.call(userId, stream);
                 console.log('user connected : ', username);
                 const video = document.createElement('video')
-                video.id = userId;
+                const videoCont = document.createElement('div');
+                videoCont.className = "videoContainer rounded mb-4"
+                videoCont.appendChild(video);
+                videoCont.id = userId;
                 call.on('stream', (anotherUserVideoStream) => {
 
                     console.log(anotherUserVideoStream.getAudioTracks());
-                    addVideoStream(video, anotherUserVideoStream, username);
+                    addVideoStream(videoCont, video, anotherUserVideoStream);
                 });
 
                 call.on('close', () => {
                     video.remove();
+                    videoCont.remove();
                 });
                 peers[userId] = call;
             });
@@ -229,6 +248,7 @@ export default function IDE({ modal, toggleModal, setModal, python, setpython, i
 
         peer.on('open', (id) => {
             setUserId(id);
+            myVideoCont.id = id;
             socket.emit('join-room', DocId, id, username);
         });
         // eslint-disable-next-line
@@ -285,12 +305,21 @@ export default function IDE({ modal, toggleModal, setModal, python, setpython, i
     useEffect(() => {
         if (socket === null) return;
         socket.on('received-toggled-events', (userId, video, audio) => {
-            const videoContainer = document.getElementById("video-grid");
-            // loop through video elements inside videoContainer
-            videoContainer.querySelectorAll("video").forEach((video) => {
-                console.log("track info:", video.srcObject.getVideoTracks()[0].enabled,
-                    video.srcObject.getAudioTracks()[0].enabled)
-            })
+            const toggledVideo = document.getElementById(userId);
+
+            if (video) {
+                toggledVideo.classList.remove("video-off");
+            }
+            else {
+                toggledVideo.classList.add("video-off");
+            }
+
+            if (audio) {
+                toggledVideo.classList.remove("audio-off");
+            }
+            else {
+                toggledVideo.classList.add("audio-off");
+            }
         });
     }, [socket])
 
