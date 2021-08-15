@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
@@ -8,7 +8,6 @@ import 'codemirror/mode/css/css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/python/python';
-import axios from 'axios';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import Peer from 'peerjs';
 import closeIcon from '../images/icons/close.png';
@@ -22,17 +21,12 @@ import 'react-circular-progressbar/dist/styles.css';
 import { v4 as uuidV4 } from 'uuid';
 
 
-export default function IDE() {
-    const [docId, setDocId] = useState(null);
+export default function IDE({ modal, toggleModal, setModal, python, setpython, input, setInput, selected, setSelected, output, setOutput, textEditor, setTextEditor, processing, setProcessing, percentageStage, setPercentageStage }) {
+    const [DocId, setDocId] = useState(null);
     const [socket, setSocket] = useState(null);
     const [cpp, setcpp] = useState('');
     const [java, setjava] = useState('');
-    const [python, setpython] = useState('');
-    const [selected, setSelected] = useState('PYTHON');
     const [peer, setPeer] = useState(null);
-    const [input, setInput] = useState('');
-    const [output, setOutput] = useState('');
-    const [modal, setModal] = useState(false);
     const username = 'smit'
     const videoGrid = document.getElementById('video-grid');
     const myVideo = document.createElement('video');
@@ -42,14 +36,19 @@ export default function IDE() {
     const peers = {};
     const colorsRef = useRef(null);
     const [userId, setUserId] = useState(null);
-    const [textEditor, setTextEditor] = useState('input');
-    const [processing, setProcessing] = useState(false);
-    const [percentageStage, setPercentageStage] = useState(0);
-
+    const [myvideoon, setMyvideoon] = useState(true);
 
 
     useEffect(() => {
-        setDocId(uuidV4());
+        console.log(window.location.pathname);
+        if (window.location.pathname === "/") {
+            const uid = uuidV4()
+            setDocId(uid)
+            window.location.href = "/" + uid
+        }
+        else {
+            setDocId(window.location.pathname.split('/')[1])
+        }
         var TempSocket = io('http://localhost:3001');
         setSocket(TempSocket);
         const peer = new Peer(undefined, {
@@ -67,14 +66,15 @@ export default function IDE() {
 
     useEffect(() => {
         if (socket == null) return;
-        socket.emit('get-document', docId);
+        console.log("docid:", DocId);
+        socket.emit('get-document', DocId);
         socket.once('load-document', (data) => {
             setcpp(data.cpp);
             setjava(data.java);
             setpython(data.python);
         });
 
-    }, [socket, docId]);
+    }, [socket, DocId]);
 
 
     useEffect(() => {
@@ -125,16 +125,82 @@ export default function IDE() {
             audio: true
         }).then(stream => {
             addVideoStream(myVideo, stream);
-
+            setMyvideoon(true);
             setMystream(stream);
-            peer.on('call', cal => {
-                cal.answer(stream);
+            peer.on('call', call => {
+                console.log(call);
+                call.answer(stream);
+                const video = document.createElement('video');
+                video.className = "rounded mb-4";
+                call.on('stream', (anotherUserVideoStream) => {
+                    addVideoStream(video, anotherUserVideoStream);
+                });
+
+                call.on('close', () => {
+                    video.remove();
+                });
+                console.log(call);
+                peers[call.peer] = call;
+            });
+
+            socket.on('user-connected', (userId, username) => {
+                const call = peer.call(userId, stream);
+                // call.metadata.username = username;
+                console.log('user connected : ', username);
+                const video = document.createElement('video')
+                video.id = userId;
+                video.username = username;
+                call.on('stream', (anotherUserVideoStream) => {
+
+                    console.log(anotherUserVideoStream.getAudioTracks());
+                    addVideoStream(video, anotherUserVideoStream, username);
+                });
+
+                call.on('close', () => {
+                    video.remove();
+                });
+                peers[userId] = call;
+            });
+
+
+        });
+
+        socket.on('user-disconnected', userId => {
+            if (peers[userId]) peers[userId].close();
+        });
+
+        peer.on('open', (id) => {
+            setUserId(id);
+            socket.emit('join-room', DocId, id, username);
+        });
+        // eslint-disable-next-line
+    }, [socket, DocId, peer]);
+
+    const addVideo = useCallback(() => {
+        if (socket == null) return;
+
+        navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true
+        }).then(stream => {
+            addVideoStream(myVideo, stream);
+            setMyvideoon(true);
+            setMystream(stream);
+            replaceStream(stream);
+            peer.on('call', call => {
+                call.answer(stream);
                 const video = document.createElement('video');
                 video.className = "rounded mb-4"
 
-                cal.on('stream', (anotherUserVideoStream) => {
+                call.on('stream', (anotherUserVideoStream) => {
                     addVideoStream(video, anotherUserVideoStream);
                 });
+
+                call.on('close', () => {
+                    video.remove();
+                });
+                console.log(call);
+                peers[call.peer] = call;
             });
 
             socket.on('user-connected', (userId, username) => {
@@ -163,10 +229,12 @@ export default function IDE() {
 
         peer.on('open', (id) => {
             setUserId(id);
-            socket.emit('join-room', docId, id, username);
+            socket.emit('join-room', DocId, id, username);
         });
         // eslint-disable-next-line
-    }, [socket, docId, peer]);
+    }, [socket, DocId, peer]);
+
+
 
     const muteMic = () => {
         myStream.getAudioTracks()[0].enabled = !(myStream.getAudioTracks()[0].enabled);
@@ -174,18 +242,57 @@ export default function IDE() {
     }
 
     const muteCam = () => {
+
         if (socket === null) return;
+        // if (myStream && myvideoon) {
+        //     myStream.getVideoTracks()[0].enabled = false;
+        //     // myStream.getVideoTracks()[0].stop();
+        //     // forEach((track) => {
+        //     //   if (track.kind === 'video') {
+        //     //     track.stop();
+        //     //   }
+        //     // });
+        //     console.log(myStream.getVideoTracks()[0].enabled);
+        //     setMyvideoon(false);
+        // }
+        // else {
+        //     // addVideo();
+        //     setMyvideoon(true);
+        // }
         myStream.getVideoTracks()[0].enabled = !(myStream.getVideoTracks()[0].enabled);
-        // toggle webcam tracks
+        // // toggle webcam tracks
         socket.emit('toggled', userId, myStream.getVideoTracks()[0].enabled, myStream.getAudioTracks()[0].enabled);
+    }
+
+
+    const replaceStream = (mediaStream) => {
+        Object.values(peers).map((peer) => {
+            peer.peerConnection?.getSenders().map((sender) => {
+                if (sender.track.kind === "audio") {
+                    if (mediaStream.getAudioTracks().length > 0) {
+                        sender.replaceTrack(mediaStream.getAudioTracks()[0]);
+                    }
+                }
+                if (sender.track.kind === "video") {
+                    if (mediaStream.getVideoTracks().length > 0) {
+                        sender.replaceTrack(mediaStream.getVideoTracks()[0]);
+                    }
+                }
+            });
+        })
     }
 
     useEffect(() => {
         if (socket === null) return;
         socket.on('received-toggled-events', (userId, video, audio) => {
-            console.log(userId, video, audio);
+            const videoContainer = document.getElementById("video-grid");
+            // loop through video elements inside videoContainer
+            videoContainer.querySelectorAll("video").forEach((video) => {
+                console.log("track info:", video.srcObject.getVideoTracks()[0].enabled,
+                    video.srcObject.getAudioTracks()[0].enabled)
+            })
         });
-    })
+    }, [socket])
 
 
     useEffect(() => {
@@ -309,114 +416,6 @@ export default function IDE() {
         socket.on('drawing', onDrawingEvent);
     }, [socket]);
 
-    let statusLoop = null;
-
-    const runCode = () => {
-        setOutput('')
-        setTextEditor('output');
-        setProcessing(true);
-        setPercentageStage(10);
-
-        var lang = selected;
-        // console.log(lang, input);
-        var backend_url = 'https://api.hackerearth.com/v4/partner/code-evaluation/submissions/';
-
-        var data = {
-            "lang": lang,
-            "source": python,
-            "input": input,
-            "memory_limit": 243232,
-            "time_limit": 5,
-            "context": "{'id': 213121}",
-            "callback": "https://client.com/callback/"
-        }
-
-
-        var status;
-        fetch(backend_url, {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'client-secret': process.env.REACT_APP_HACKEREARTH_SECRET
-            },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
-            body: JSON.stringify(data)
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                status = data.status_update_url;
-
-                setPercentageStage(25)
-
-                statusLoop = setInterval(() => {
-                    fetch(status, {
-                        method: 'GET',
-                        mode: 'cors',
-                        cache: 'no-cache',
-                        credentials: 'same-origin',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'client-secret': process.env.REACT_APP_HACKEREARTH_SECRET
-                        },
-                        redirect: 'follow',
-                        referrerPolicy: 'no-referrer',
-                    })
-                        .then((res) => res.json())
-                        .then((data) => {
-                            setPercentageStage(75)
-                            // console.log(data);
-                            if (data.result.compile_status === 'OK') {
-                                if (data.result.run_status.status === 'AC') {
-                                    getOutput(data.result.run_status.output);
-                                    clearInterval(statusLoop);
-                                }
-                                else if (data.result.run_status.status === 'OLE') {
-                                    setOutput(data.result.run_status.status_detail);
-                                    setProcessing(false);
-                                    clearInterval(statusLoop);
-                                }
-                                else if (data.result.run_status.status !== 'NA') {
-                                    setOutput(data.result.run_status.stderr);
-                                    setProcessing(false);
-                                    clearInterval(statusLoop);
-                                }
-                            }
-                            else {
-                                setOutput(data.result.compile_status);
-                                setProcessing(false);
-                                clearInterval(statusLoop);
-                                return;
-                            }
-                        })
-                        .catch(e => {
-                            setProcessing(false);
-                            clearInterval(statusLoop);
-                            console.log(e)
-                        });
-                }, 2000)
-            }).catch(e => {
-                console.log(e)
-            });;
-
-    };
-
-    const getOutput = (link) => {
-        axios.get(link).then((res) => {
-            setPercentageStage(100)
-            setProcessing(false);
-            setOutput(res.data);
-        }).catch((err) => {
-            console.log(err);
-        })
-    }
-
-    const toggleModal = () => {
-        setModal(!modal);
-    }
 
     const handleInputFileChange = () => {
         const input = document.getElementById('input-file-upload');
@@ -435,139 +434,141 @@ export default function IDE() {
 
     return (
         <>
-            <div className="flex-grow flex">
-                <div id="editor" className="flex-grow flex flex-col">
-                    <FileTabs />
-                    <div className="flex-grow overflow-y-auto" style={{ height: "calc(100vh - 310px)" }}>
-                        {
-                            selected === 'CPP' &&
-                            <section className="playground">
-                                <div className="code-editor-java flex flex-col h-full mb-5 java-code">
-                                    <div className="editor-header">
-                                        <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
-                                    </div>
-                                    <CodeMirror
-                                        value={cpp}
-                                        className="flex-grow text-base"
-                                        options={{
-                                            mode: "text/x-csrc",
-                                            theme: 'material',
-                                            lineNumbers: true,
-                                            scrollbarStyle: null,
-                                            lineWrapping: true,
-                                        }}
-                                        onBeforeChange={(editor, data, cpp) => {
-                                            setcpp(cpp);
-                                        }}
-                                    />
+            <div className="flex">
+                <div className="h-screen flex flex-grow flex-col">
+                    <div className="flex-grow flex">
+                        <div id="editor" className="flex-grow flex flex-col">
+                            <FileTabs />
+                            <div className="flex-grow overflow-y-auto" style={{ height: "calc(100vh - 310px)" }}>
+                                {
+                                    selected === 'CPP' &&
+                                    <section className="playground">
+                                        <div className="code-editor-java flex flex-col h-full mb-5 java-code">
+                                            <div className="editor-header">
+                                                <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
+                                            </div>
+                                            <CodeMirror
+                                                value={cpp}
+                                                className="flex-grow text-base"
+                                                options={{
+                                                    mode: "text/x-csrc",
+                                                    theme: 'material',
+                                                    lineNumbers: true,
+                                                    scrollbarStyle: null,
+                                                    lineWrapping: true,
+                                                }}
+                                                onBeforeChange={(editor, data, cpp) => {
+                                                    setcpp(cpp);
+                                                }}
+                                            />
+                                        </div>
+                                    </section>
+                                }
+                                {
+                                    selected === 'JAVA' &&
+                                    <section className="playground">
+                                        <div className="code-editor-java flex flex-col h-full mb-5 java-code">
+                                            <div className="editor-header">
+                                                <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
+                                            </div>
+                                            <CodeMirror
+                                                value={java}
+                                                className="flex-grow text-base"
+                                                options={{
+                                                    mode: "text/x-java",
+                                                    theme: 'material',
+                                                    lineNumbers: true,
+                                                    scrollbarStyle: null,
+                                                    lineWrapping: true,
+                                                }}
+                                                onBeforeChange={(editor, data, java) => {
+                                                    setjava(java);
+                                                }}
+                                            />
+                                        </div>
+                                    </section>
+                                }
+                                {
+                                    selected === 'PYTHON' &&
+                                    <section className="playground">
+                                        <div className="code-editor-java flex flex-col h-full mb-5 java-code">
+                                            <div className="editor-header">
+                                                <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
+                                            </div>
+                                            <CodeMirror
+                                                value={python}
+                                                className="flex-grow text-base"
+                                                options={{
+                                                    mode: "python",
+                                                    theme: 'material',
+                                                    lineNumbers: true,
+                                                    scrollbarStyle: null,
+                                                    lineWrapping: true,
+                                                }}
+                                                onBeforeChange={(editor, data, python) => {
+                                                    setpython(python);
+                                                }}
+                                            />
+                                        </div>
+                                    </section>
+                                }
+                            </div>
+                            <div className={`flex-grow ${modal ? "top-0" : " top-full"} duration-300 left-0 p-4 backdrop-filter backdrop-blur-sm absolute z-50 w-screen h-screen`}>
+                                <div ref={colorsRef} className="colors absolute flex select-none left-10 top-10">
+                                    <Icon icon={penFill} data-color="black" className="block cursor-pointer color black text-orange-standard" height="28" />
+                                    <Icon icon={eraser24Filled} data-color="white" className="block cursor-pointer color white ml-4" height="30" />
                                 </div>
-                            </section>
-                        }
-                        {
-                            selected === 'JAVA' &&
-                            <section className="playground">
-                                <div className="code-editor-java flex flex-col h-full mb-5 java-code">
-                                    <div className="editor-header">
-                                        <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
-                                    </div>
-                                    <CodeMirror
-                                        value={java}
-                                        className="flex-grow text-base"
-                                        options={{
-                                            mode: "text/x-java",
-                                            theme: 'material',
-                                            lineNumbers: true,
-                                            scrollbarStyle: null,
-                                            lineWrapping: true,
-                                        }}
-                                        onBeforeChange={(editor, data, java) => {
-                                            setjava(java);
-                                        }}
-                                    />
+                                <div className="absolute right-10 select-none top-10">
+                                    <img onClick={toggleModal} src={closeIcon} className="w-6 cursor-pointer" alt="close icon" />
                                 </div>
-                            </section>
-                        }
-                        {
-                            selected === 'PYTHON' &&
-                            <section className="playground">
-                                <div className="code-editor-java flex flex-col h-full mb-5 java-code">
-                                    <div className="editor-header">
-                                        <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
-                                    </div>
-                                    <CodeMirror
-                                        value={python}
-                                        className="flex-grow text-base"
-                                        options={{
-                                            mode: "python",
-                                            theme: 'material',
-                                            lineNumbers: true,
-                                            scrollbarStyle: null,
-                                            lineWrapping: true,
-                                        }}
-                                        onBeforeChange={(editor, data, python) => {
-                                            setpython(python);
-                                        }}
-                                    />
-                                </div>
-                            </section>
-                        }
-                    </div>
-                    <div className={`flex-grow ${modal ? "top-0" : " top-full"} duration-300 left-0 p-4 backdrop-filter backdrop-blur-sm absolute z-50 w-screen h-screen`}>
-                        <div ref={colorsRef} className="colors absolute flex select-none left-10 top-10">
-                            <Icon icon={penFill} data-color="black" className="block cursor-pointer color black text-orange-standard" height="28" />
-                            <Icon icon={eraser24Filled} data-color="white" className="block cursor-pointer color white ml-4" height="30" />
-                        </div>
-                        <div className="absolute right-10 select-none top-10">
-                            <img onClick={toggleModal} src={closeIcon} className="w-6 cursor-pointer" alt="close icon" />
-                        </div>
 
-                        <canvas id="whiteboard-canvas" className="m-0 border h-full w-full bg-white rounded-xl border-black" />
-                    </div>
-                    <div className="h-64 flex flex-col bg-gray-standard">
-                        <div className="flex items-center justify-evenly text-center duration-100">
-                            <div onClick={() => {
-                                setTextEditor('input')
-                            }}
-                                className={` cursor-pointer w-1/2 ${(textEditor === 'input' ? "hover:opacity-90 border-black" : " hover:opacity-60 border-transparent opacity-50")} border-r  bg-orange-standard`}>Input</div>
-                            <div
-                                onClick={() => {
-                                    setTextEditor('output')
-                                }}
-                                className={`cursor-pointer w-1/2 ${(textEditor === 'output' ? "hover:opacity-90 border-black" : " hover:opacity-60 border-transparent opacity-50")} border-l bg-orange-standard`}>Output</div>
-                        </div>
-                        <div className="w-full flex-grow p-4 relative">
-                            {
-                                textEditor === 'input' ?
-                                    <textarea className="rounded-md outline-none shadow-md w-full h-full p-4 resize-none" placeholder="enter an input..." onChange={(e) => { setInput(e.target.value) }} value={input} rows="4" cols="50">
-                                    </textarea>
-                                    : <textarea className={` ${processing ? "transform animate-pulse" : ""} rounded-md outline-none shadow-md w-full h-full p-4 resize-none`} readOnly placeholder="output will be shown here" value={output} rows="4" cols="50">
-                                    </textarea>
-                            }
-                            {
-                                processing &&
-                                <div className="absolute z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
-                                    <CircularProgressbar styles={buildStyles({
-                                        rotation: 0.25,
-                                        strokeLinecap: 'butt',
-                                        textSize: '22px',
-                                        pathTransitionDuration: 0.5,
-                                        pathColor: `#EE9B00`,
-                                        textColor: '#EE9B00'
-                                    })} className="h-20" value={percentageStage} text={`${percentageStage}%`} />
+                                <canvas id="whiteboard-canvas" className="m-0 border h-full w-full bg-white rounded-xl border-black" />
+                            </div>
+                            <div className="h-64 flex flex-col bg-gray-standard">
+                                <div className="flex items-center justify-evenly text-center duration-100">
+                                    <div onClick={() => {
+                                        setTextEditor('input')
+                                    }}
+                                        className={` cursor-pointer w-1/2 ${(textEditor === 'input' ? "hover:opacity-90 border-black" : " hover:opacity-60 border-transparent opacity-50")} border-r  bg-orange-standard`}>Input</div>
+                                    <div
+                                        onClick={() => {
+                                            setTextEditor('output')
+                                        }}
+                                        className={`cursor-pointer w-1/2 ${(textEditor === 'output' ? "hover:opacity-90 border-black" : " hover:opacity-60 border-transparent opacity-50")} border-l bg-orange-standard`}>Output</div>
                                 </div>
-                            }
+                                <div className="w-full flex-grow p-4 relative">
+                                    {
+                                        textEditor === 'input' ?
+                                            <textarea className="rounded-md outline-none shadow-md w-full h-full p-4 resize-none" placeholder="enter an input..." onChange={(e) => { setInput(e.target.value) }} value={input} rows="4" cols="50">
+                                            </textarea>
+                                            : <textarea className={` ${processing ? "transform animate-pulse" : ""} rounded-md outline-none shadow-md w-full h-full p-4 resize-none`} readOnly placeholder="output will be shown here" value={output} rows="4" cols="50">
+                                            </textarea>
+                                    }
+                                    {
+                                        processing &&
+                                        <div className="absolute z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+                                            <CircularProgressbar styles={buildStyles({
+                                                rotation: 0.25,
+                                                strokeLinecap: 'butt',
+                                                textSize: '22px',
+                                                pathTransitionDuration: 0.5,
+                                                pathColor: `#EE9B00`,
+                                                textColor: '#EE9B00'
+                                            })} className="h-20" value={percentageStage} text={`${percentageStage}%`} />
+                                        </div>
+                                    }
+                                </div>
+                                <input accept="text/plain" type="file" onChange={handleFileDataChange} className="hidden" id="input-file-upload" />
+                                <div onClick={handleInputFileChange} className="mb-4 text-orange-standard w-full text-center cursor-pointer"><span className="hover:opacity-70">... or upload an file</span></div>
+                            </div>
                         </div>
-                        <input accept="text/plain" type="file" onChange={handleFileDataChange} className="hidden" id="input-file-upload" />
-                        <div onClick={handleInputFileChange} className="mb-4 text-orange-standard w-full text-center cursor-pointer"><span className="hover:opacity-70">... or upload an file</span></div>
+                        <RightVideoPanel muteCam={muteCam} muteMic={muteMic} />
                     </div>
                 </div>
-                <RightVideoPanel muteCam={muteCam} muteMic={muteMic} />
             </div>
         </>
     )
 }
-
-
 
 
 
