@@ -75,7 +75,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
             setjava(data.java);
             setpython(data.python);
         });
-
+        // eslint-disable-next-line
     }, [socket, DocId]);
 
 
@@ -92,6 +92,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
         return () => {
             socket.off('receive-changes', updateC);
         }
+        // eslint-disable-next-line
     }, [socket, cpp, java, python]);
 
     useEffect(() => {
@@ -151,7 +152,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
             });
 
             socket.on('user-connected', (userId) => {
-                const call = peer.call(userId, stream, { metadata: { name: userName }});
+                const call = peer.call(userId, stream, { metadata: { name: userName } });
                 const video = document.createElement('video')
                 const videoCont = document.createElement('div');
                 videoCont.appendChild(video);
@@ -219,7 +220,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
             });
 
             socket.on('user-connected', (userId) => {
-                const call = peer.call(userId, stream, { metadata: { name: userName }});
+                const call = peer.call(userId, stream, { metadata: { name: userName } });
                 const video = document.createElement('video')
                 const videoCont = document.createElement('div');
                 videoCont.className = "videoContainer rounded mb-4"
@@ -250,7 +251,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
             setUserId(id);
             myVideoCont.id = id;
             myVideoCont.dataset.name = userName;
-            
+
             socket.emit('join-room', DocId, id);
         });
         // eslint-disable-next-line
@@ -275,9 +276,9 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
         if (socket === null) return;
         if (myStream && myvideoon) {
             myStream.getVideoTracks().forEach((track) => {
-              if (track.kind === 'video') {
-                track.stop();
-              }
+                if (track.kind === 'video') {
+                    track.stop();
+                }
             });
             // console.log(myStream.getVideoTracks()[0].enabled);
             setMyvideoon(false);
@@ -295,15 +296,15 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
             toggledVideo.classList.add("video-off");
         }
 
-        
+
         // // toggle webcam tracks
         socket.emit('toggled', userId, myStream.getVideoTracks()[0].enabled, myStream.getAudioTracks()[0].enabled);
     }
 
 
     const replaceStream = (mediaStream) => {
-        Object.values(peers).map((peer) => {
-            peer.peerConnection?.getSenders().map((sender) => {
+        Object.values(peers).forEach((peer) => {
+            peer.peerConnection?.getSenders().forEach((sender) => {
                 if (sender.track.kind === "audio") {
                     if (mediaStream.getAudioTracks().length > 0) {
                         sender.replaceTrack(mediaStream.getAudioTracks()[0]);
@@ -620,7 +621,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
 function RightVideoPanel({ muteCam, muteMic }) {
 
     return (
-        <div style={{ height: "calc(100vh - 50px)" }} className="flex flex-col items-center relative p-2 bg-purple-dark shadow-lg">
+        <div style={{ height: "calc(100vh - 47px)" }} className="flex flex-col items-center relative p-2 bg-purple-dark shadow-lg">
             {/* <button><img className="h-4 my-2" src={upArrow} alt="scroll up arrow" /></button> */}
             <div className="flex flex-col items-center overflow-y-auto justify-center pb-10" id="video-grid"></div>
             {/* <button><img className="h-4 my-2 transform rotate-180" src={upArrow} alt="scroll down arrow" /></button> */}
