@@ -27,7 +27,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
     const [cpp, setcpp] = useState('');
     const [java, setjava] = useState('');
     const [peer, setPeer] = useState(null);
-    const username = 'smit'
+    const userName = 'smit'
     const videoGrid = document.getElementById('video-grid');
     const myVideo = document.createElement('video');
     const myVideoCont = document.createElement('div');
@@ -136,6 +136,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
                 const videoCont = document.createElement('div');
                 videoCont.appendChild(video);
                 videoCont.id = call.peer;
+                videoCont.dataset.name = call.metadata.name;
                 videoCont.className = "videoContainer rounded mb-4";
                 call.on('stream', (anotherUserVideoStream) => {
                     addVideoStream(videoCont, video, anotherUserVideoStream);
@@ -149,15 +150,13 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
                 peers[call.peer] = call;
             });
 
-            socket.on('user-connected', (userId, username) => {
-                const call = peer.call(userId, stream);
-                // call.metadata.username = username;
-                console.log('user connected : ', username);
+            socket.on('user-connected', (userId) => {
+                const call = peer.call(userId, stream, { metadata: { name: userName }});
                 const video = document.createElement('video')
                 const videoCont = document.createElement('div');
                 videoCont.appendChild(video);
                 videoCont.id = userId;
-                video.username = username;
+                videoCont.dataset.name = call.metadata.name;
                 videoCont.className = "videoContainer rounded mb-4";
                 call.on('stream', (anotherUserVideoStream) => {
 
@@ -182,7 +181,8 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
         peer.on('open', (id) => {
             setUserId(id);
             myVideoCont.id = id;
-            socket.emit('join-room', DocId, id, username);
+            myVideoCont.dataset.name = userName;
+            socket.emit('join-room', DocId, id);
         });
         // eslint-disable-next-line
     }, [socket, DocId, peer]);
@@ -205,7 +205,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
                 videoCont.className = "videoContainer rounded mb-4"
                 videoCont.appendChild(video);
                 videoCont.id = call.peer;
-
+                videoCont.dataset.name = call.metadata.name;
                 call.on('stream', (anotherUserVideoStream) => {
                     addVideoStream(videoCont, video, anotherUserVideoStream);
                 });
@@ -218,14 +218,14 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
                 peers[call.peer] = call;
             });
 
-            socket.on('user-connected', (userId, username) => {
-                const call = peer.call(userId, stream);
-                console.log('user connected : ', username);
+            socket.on('user-connected', (userId) => {
+                const call = peer.call(userId, stream, { metadata: { name: userName }});
                 const video = document.createElement('video')
                 const videoCont = document.createElement('div');
                 videoCont.className = "videoContainer rounded mb-4"
                 videoCont.appendChild(video);
                 videoCont.id = userId;
+                videoCont.dataset.name = call.metadata.name;
                 call.on('stream', (anotherUserVideoStream) => {
 
                     console.log(anotherUserVideoStream.getAudioTracks());
@@ -249,7 +249,9 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
         peer.on('open', (id) => {
             setUserId(id);
             myVideoCont.id = id;
-            socket.emit('join-room', DocId, id, username);
+            myVideoCont.dataset.name = userName;
+            
+            socket.emit('join-room', DocId, id);
         });
         // eslint-disable-next-line
     }, [socket, DocId, peer]);
@@ -258,28 +260,42 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
 
     const muteMic = () => {
         myStream.getAudioTracks()[0].enabled = !(myStream.getAudioTracks()[0].enabled);
+        const toggledVideo = document.getElementById(userId);
+        if (myStream.getAudioTracks()[0].enabled) {
+            toggledVideo.classList.remove("audio-off");
+        }
+        else {
+            toggledVideo.classList.add("audio-off");
+        }
         socket.emit('toggled', userId, myStream.getVideoTracks()[0].enabled, myStream.getAudioTracks()[0].enabled);
     }
 
     const muteCam = () => {
 
         if (socket === null) return;
-        // if (myStream && myvideoon) {
-        //     myStream.getVideoTracks()[0].enabled = false;
-        //     // myStream.getVideoTracks()[0].stop();
-        //     // forEach((track) => {
-        //     //   if (track.kind === 'video') {
-        //     //     track.stop();
-        //     //   }
-        //     // });
-        //     console.log(myStream.getVideoTracks()[0].enabled);
-        //     setMyvideoon(false);
-        // }
-        // else {
-        //     // addVideo();
-        //     setMyvideoon(true);
-        // }
+        if (myStream && myvideoon) {
+            myStream.getVideoTracks().forEach((track) => {
+              if (track.kind === 'video') {
+                track.stop();
+              }
+            });
+            // console.log(myStream.getVideoTracks()[0].enabled);
+            setMyvideoon(false);
+        }
+        else {
+            addVideo();
+            setMyvideoon(true);
+        }
         myStream.getVideoTracks()[0].enabled = !(myStream.getVideoTracks()[0].enabled);
+        const toggledVideo = document.getElementById(userId);
+        if (myStream.getVideoTracks()[0].enabled) {
+            toggledVideo.classList.remove("video-off");
+        }
+        else {
+            toggledVideo.classList.add("video-off");
+        }
+
+        
         // // toggle webcam tracks
         socket.emit('toggled', userId, myStream.getVideoTracks()[0].enabled, myStream.getAudioTracks()[0].enabled);
     }
