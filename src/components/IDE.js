@@ -51,10 +51,10 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
         else {
             setDocId(window.location.pathname.split('/')[1])
         }
-        var TempSocket = io('http://localhost:3001');
+        var TempSocket = io(process.env.REACT_APP_BACKEND_ENDPOINT_URL);
         setSocket(TempSocket);
         const peer = new Peer(undefined, {
-            host: 'localhost',
+            host: process.env.REACT_APP_BACKEND_ENDPOINT,
             port: 9000,
             path: '/'
         });
