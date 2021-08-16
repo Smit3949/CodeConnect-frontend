@@ -122,6 +122,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
 
     useEffect(() => {
         if (socket == null) return;
+        console.log('Peer ==> ', peer);
 
         navigator.mediaDevices.getUserMedia({
             video: true,
@@ -131,7 +132,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
             setMyvideoon(true);
             setMystream(stream);
             peer.on('call', call => {
-                console.log(call);
+                console.log("Call: ", call);
                 call.answer(stream);
                 const video = document.createElement('video');
                 const videoCont = document.createElement('div');
@@ -180,6 +181,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
         });
 
         peer.on('open', (id) => {
+            console.log('Peer.on', id);
             setUserId(id);
             myVideoCont.id = id;
             myVideoCont.dataset.name = userName;
