@@ -54,8 +54,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
         setSocket(TempSocket);
         const peer = new Peer(undefined, {
             host: process.env.REACT_APP_BACKEND_ENDPOINT,
-            secure: true,
-            port: 9000,
+            port: 443,
             path: '/'
         });
         setPeer(peer);
