@@ -67,7 +67,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
 
     useEffect(() => {
         if (socket == null) return;
-        console.log("docid:", DocId);
         socket.emit('get-document', DocId);
         socket.once('load-document', (data) => {
             setcpp(data.cpp);
@@ -121,7 +120,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
 
     useEffect(() => {
         if (socket == null) return;
-        console.log('Peer ==> ', peer);
 
         navigator.mediaDevices.getUserMedia({
             video: true,
@@ -131,7 +129,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
             setMyvideoon(true);
             setMystream(stream);
             peer.on('call', call => {
-                console.log("Call: ", call);
                 call.answer(stream);
                 const video = document.createElement('video');
                 const videoCont = document.createElement('div');
@@ -147,7 +144,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
                     video.remove();
                     videoCont.remove();
                 });
-                console.log(call);
                 peers[call.peer] = call;
             });
 
@@ -160,8 +156,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
                 videoCont.dataset.name = call.metadata.name;
                 videoCont.className = "videoContainer rounded mb-4";
                 call.on('stream', (anotherUserVideoStream) => {
-
-                    console.log(anotherUserVideoStream.getAudioTracks());
                     addVideoStream(videoCont, video, anotherUserVideoStream);
                 });
 
@@ -180,7 +174,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
         });
 
         peer.on('open', (id) => {
-            console.log('Peer.on', id);
             setUserId(id);
             myVideoCont.id = id;
             myVideoCont.dataset.name = userName;
@@ -216,7 +209,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
                     video.remove();
                     videoCont.remove();
                 });
-                console.log(call);
                 peers[call.peer] = call;
             });
 
@@ -229,8 +221,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
                 videoCont.id = userId;
                 videoCont.dataset.name = call.metadata.name;
                 call.on('stream', (anotherUserVideoStream) => {
-
-                    console.log(anotherUserVideoStream.getAudioTracks());
                     addVideoStream(videoCont, video, anotherUserVideoStream);
                 });
 

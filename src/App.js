@@ -28,8 +28,7 @@ function App() {
     setPercentageStage(10);
 
     var lang = selected;
-    // console.log(lang, input);
-    var backend_url = 'https://api.hackerearth.com/v4/partner/code-evaluation/submissions/';
+    const backend_url = process.env.REACT_APP_BACKEND_ENDPOINT_URL + "/runcode";
 
     var data = {
       "lang": lang,
@@ -43,37 +42,27 @@ function App() {
 
 
     var status;
-    fetch(backend_url, {
+    var raw = JSON.stringify(data);
+
+    var requestOptions = {
       method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json',
-        'client-secret': process.env.REACT_APP_HACKEREARTH_SECRET
       },
-      redirect: 'follow',
-      referrerPolicy: 'no-referrer',
-      body: JSON.stringify(data)
-    })
+      body: raw,
+      redirect: 'follow'
+    };
+    fetch(backend_url, requestOptions)
       .then((res) => res.json())
       .then((data) => {
         status = data.status_update_url;
+        const url = backend_url + "?url=" + status;
 
         setPercentageStage(25)
 
         statusLoop = setInterval(() => {
-          fetch(status, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            headers: {
-              'Content-Type': 'application/json',
-              'client-secret': process.env.REACT_APP_HACKEREARTH_SECRET
-            },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
+          fetch(url, {
+            method: 'GET'
           })
             .then((res) => res.json())
             .then((data) => {
@@ -141,7 +130,6 @@ function App() {
 export default App;
 
 function Header({ runCode, toggleModal, isAuthenticated, userInfo }) {
-  console.log(userInfo);
   const [toolTip, showToolTip] = useState(false);
   return (
     <div className=" bg-purple-standard flex py-2 px-2 justify-between items-center">
