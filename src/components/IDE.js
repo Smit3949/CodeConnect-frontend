@@ -42,7 +42,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
 
 
     useEffect(() => {
-        console.log(window.location.pathname);
         if (window.location.pathname === "/") {
             const uid = uuidV4()
             setDocId(uid)
@@ -55,6 +54,7 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
         setSocket(TempSocket);
         const peer = new Peer(undefined, {
             host: process.env.REACT_APP_BACKEND_ENDPOINT,
+            secure: true,
             port: 9000,
             path: '/'
         });
