@@ -18,11 +18,9 @@ import { Icon } from '@iconify/react';
 import eraser24Filled from '@iconify/icons-fluent/eraser-24-filled';
 import penFill from '@iconify/icons-bi/pen-fill';
 import 'react-circular-progressbar/dist/styles.css';
-import { v4 as uuidV4 } from 'uuid';
 
 
-export default function IDE({ modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage }) {
-    const [DocId, setDocId] = useState(null);
+export default function IDE({ docId, modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage }) {
     const [socket, setSocket] = useState(null);
     const [cpp, setcpp] = useState('');
     const [java, setjava] = useState('');
@@ -42,14 +40,6 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
 
 
     useEffect(() => {
-        if (window.location.pathname === "/") {
-            const uid = uuidV4()
-            setDocId(uid)
-            window.location.href = "/" + uid
-        }
-        else {
-            setDocId(window.location.pathname.split('/')[1])
-        }
         var TempSocket = io(process.env.REACT_APP_BACKEND_ENDPOINT_URL);
         setSocket(TempSocket);
         const peer = new Peer(undefined, {
@@ -67,14 +57,14 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
 
     useEffect(() => {
         if (socket == null) return;
-        socket.emit('get-document', DocId);
+        socket.emit('get-document', docId);
         socket.once('load-document', (data) => {
             setcpp(data.cpp);
             setjava(data.java);
             setpython(data.python);
         });
         // eslint-disable-next-line
-    }, [socket, DocId]);
+    }, [socket, docId]);
 
 
     useEffect(() => {
@@ -177,10 +167,10 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
             setUserId(id);
             myVideoCont.id = id;
             myVideoCont.dataset.name = userName;
-            socket.emit('join-room', DocId, id);
+            socket.emit('join-room', docId, id);
         });
         // eslint-disable-next-line
-    }, [socket, DocId, peer]);
+    }, [socket, docId, peer]);
 
     const addVideo = useCallback(() => {
         if (socket == null) return;
@@ -243,10 +233,10 @@ export default function IDE({ modal, toggleModal, python, setpython, input, setI
             myVideoCont.id = id;
             myVideoCont.dataset.name = userName;
 
-            socket.emit('join-room', DocId, id);
+            socket.emit('join-room', docId, id);
         });
         // eslint-disable-next-line
-    }, [socket, DocId, peer]);
+    }, [socket, docId, peer]);
 
 
 
@@ -624,7 +614,9 @@ function RightVideoPanel({ muteCam, muteMic }) {
                     <img src={videoIcon} onClick={muteCam} alt="video icon" />
                 </button>
                 <button className="bg-orange-standard border border-r rounded-full h-8 w-8 p-1.5">
-                    <img src={phoneIcon} onClick={muteMic} alt="phone icon" />
+                    <img src={phoneIcon} onClick={() => {
+                        window.location.href = "/"
+                    }} alt="phone icon" />
                 </button>
             </div>
         </div>

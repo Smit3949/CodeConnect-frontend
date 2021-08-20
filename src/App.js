@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import IDE from "./components/IDE";
 import { Login, Logout } from "./components/auth/Auth0";
 import { useAuth0 } from '@auth0/auth0-react'
 import { Icon } from '@iconify/react';
 import axios from 'axios';
+import { v4 as uuidV4 } from 'uuid';
 import runIcon from './images/icons/run.svg';
 import whiteboard24Regular from '@iconify/icons-fluent/whiteboard-24-regular';
+import Preview from './components/Preview';
 
 function App() {
   const [textEditor, setTextEditor] = useState('input');
@@ -16,7 +18,22 @@ function App() {
   const [input, setInput] = useState('');
   const [python, setpython] = useState('');
   const [modal, setModal] = useState(false);
+  const [docId, setDocId] = useState(null);
+  const [isDocId, setIsDocId] = useState(false);
   const { isAuthenticated, user } = useAuth0();
+
+
+  useEffect(() => {
+    if (window.location.pathname === "/") {
+      const uid = uuidV4();
+      setDocId(uid)
+      setIsDocId(false);
+    }
+    else {
+      setDocId(window.location.pathname.split('/')[1])
+      setIsDocId(true);
+    }
+  }, []);
 
 
   let statusLoop = null;
@@ -118,11 +135,16 @@ function App() {
   }
 
   return (
-    <div className="flex">
-      <div className="h-screen flex flex-grow flex-col">
-        <Header userInfo={user} runCode={runCode} isAuthenticated={isAuthenticated} toggleModal={toggleModal} />
-        <IDE modal={modal} toggleModal={toggleModal} setModal={setModal} python={python} setpython={setpython} input={input} setInput={setInput} selected={selected} setSelected={setSelected} output={output} setOutput={setOutput} textEditor={textEditor} setTextEditor={setTextEditor} processing={processing} setProcessing={setProcessing} percentageStage={percentageStage} setPercentageStage={setPercentageStage} />
-      </div>
+    <div className="h-screen flex flex-grow flex-col">
+      {
+        isDocId ?
+          <>
+            <Header userInfo={user} runCode={runCode} isAuthenticated={isAuthenticated} toggleModal={toggleModal} />
+            <IDE docId={docId} modal={modal} toggleModal={toggleModal} setModal={setModal} python={python} setpython={setpython} input={input} setInput={setInput} selected={selected} setSelected={setSelected} output={output} setOutput={setOutput} textEditor={textEditor} setTextEditor={setTextEditor} processing={processing} setProcessing={setProcessing} percentageStage={percentageStage} setPercentageStage={setPercentageStage} />
+          </>
+          :
+          <Preview docId={docId} />
+      }
     </div>
   );
 }
