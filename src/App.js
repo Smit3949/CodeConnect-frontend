@@ -5,6 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { v4 as uuidV4 } from 'uuid';
+import ReactGA from 'react-ga';
 import runIcon from './images/icons/run.svg';
 import whiteboard24Regular from '@iconify/icons-fluent/whiteboard-24-regular';
 import Preview from './components/Preview';
@@ -33,12 +34,27 @@ function App() {
       setDocId(window.location.pathname.split('/')[1])
       setIsDocId(true);
     }
+    if (isAuthenticated) {
+      ReactGA.event({
+        category: `user.logged`,
+        action: `Login`,
+        label: `${user.email}`
+      });
+    }
+    // eslint-disable-next-line
   }, []);
 
 
   let statusLoop = null;
 
   const runCode = () => {
+
+    ReactGA.event({
+      category: `button.clicked`,
+      action: `Run Code`,
+      lang: `${selected}`
+    });
+
     setOutput('')
     setTextEditor('output');
     setProcessing(true);
@@ -131,6 +147,10 @@ function App() {
   }
 
   const toggleModal = () => {
+    ReactGA.event({
+      category: `button.clicked`,
+      action: `Whiteboard ${modal ? "Opened" : "Closed"}`,
+    });
     setModal(!modal);
   }
 

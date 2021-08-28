@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
 import { Controlled as CodeMirror } from 'react-codemirror2';
+import ReactGA from 'react-ga';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/htmlmixed/htmlmixed';
@@ -40,6 +41,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
 
 
     useEffect(() => {
+        ReactGA.pageview('IDE-screen');
         var TempSocket = io(process.env.REACT_APP_BACKEND_ENDPOINT_URL);
         setSocket(TempSocket);
         const peer = new Peer(undefined, {

@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react';
+import ReactGA from 'react-ga';
 
 export default function Preview({ docId }) {
+    useEffect(() => {
+        ReactGA.pageview('preview-screen');
+    }, [])
 
     const joinRoomViaRoomId = () => {
         const roomId = document.getElementById("roomIdInput");
@@ -9,9 +13,19 @@ export default function Preview({ docId }) {
         if (roomIdValue.includes("http") || roomIdValue.includes("https")) {
             const url = new URL(roomIdValue);
             const path = url.pathname;
+            ReactGA.event({
+                category: `button.clicked`,
+                action: `Join Room`,
+                label: `from copied url`
+            });
             window.location.href = `${path}`;
         }
         else {
+            ReactGA.event({
+                category: `button.clicked`,
+                action: `Join Room`,
+                label: `from input url`
+            });
             window.location.href = `/${roomIdValue}`;
         }
     }
@@ -24,6 +38,10 @@ export default function Preview({ docId }) {
                 </div>
                 <div className="flex flex-col mt-20 justify-center  text-white">
                     <button onClick={() => {
+                        ReactGA.event({
+                            category: `button.clicked`,
+                            action: `Create Room`
+                        });
                         window.location.href = `/${docId}`
                     }} className=" hover:shadow-md duration-150 px-4 py-2 rounded-lg shadow text-blue-500 bg-white border border-blue-600 font-semibold">Create Room</button>
                     {/* <button className=" hover:shadow-md duration-300 px-4 mx-2 py-2 rounded-lg shadow bg-blue-600 font-medium">Sign Up</button> */}
