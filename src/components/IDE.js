@@ -121,6 +121,19 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             context.closePath();
 
             if (!emit) { return; }
+            const w = canvas.width;
+            const h = canvas.height;
+            // console.log(w, h, window.width, window.height);
+
+
+            socket.emit('drawing', {
+                x0: x0 / w,
+                y0: y0 / h,
+                x1: x1 / w,
+                y1: y1 / h,
+                color,
+                width
+            });
         };
 
 
