@@ -603,23 +603,35 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
 
 function RightVideoPanel({ muteCam, muteMic }) {
 
+    const [isMuteCam, setIsMuteCam] = useState(false)
+    const [isMuteMic, setIsMuteMic] = useState(false)
+
     return (
-        <div style={{ height: "calc(100vh - 47px)" }} className="flex flex-col items-center relative p-2 bg-purple-dark shadow-lg">
-            {/* <button><img className="h-4 my-2" src={upArrow} alt="scroll up arrow" /></button> */}
-            <div className="flex flex-col items-center overflow-y-auto justify-center pb-10" id="video-grid"></div>
-            {/* <button><img className="h-4 my-2 transform rotate-180" src={upArrow} alt="scroll down arrow" /></button> */}
-            <div className="flex items-center backdrop-filter backdrop-blur absolute left-0 bottom-0 pt-2 rounded-lg pb-4 w-full justify-around mt-2">
-                <button className="bg-orange-standard border border-r rounded-full h-8 w-8 p-1.5">
-                    <img src={muteIcon} alt="mute icon" />
-                </button>
-                <button className="bg-orange-standard border border-r rounded-full h-8 w-8 p-1.5">
-                    <img src={videoIcon} onClick={muteCam} alt="video icon" />
-                </button>
-                <button className="bg-orange-standard border border-r rounded-full h-8 w-8 p-1.5">
-                    <img src={phoneIcon} onClick={() => {
+        <div style={{ height: "calc(100vh - 47px)" }} className="overflow-hidden duration-300 flex flex-col items-center justify-center">
+            <div style={{ height: "calc(100vh - 47px)" }} className="flex overflow-hidden justify-between flex-col bg-theme-teal-dark relative py-2 px-2.5  shadow-lg">
+                {/* <button><img className="h-4 my-2" src={upArrow} alt="scroll up arrow" /></button> */}
+                <div style={{ width: "200px" }} className="flex flex-col items-center overflow-y-auto justify-center pt-10" id="video-grid">
+                </div>
+                {/* <button><img className="h-4 my-2 transform rotate-180" src={upArrow} alt="scroll down arrow" /></button> */}
+                <div className="flex items-center absolute backdrop-filter backdrop-blur left-0 bottom-0 pt-2 rounded-lg pb-4 w-full justify-around mt-2">
+                    <button onClick={() => {
+                        setIsMuteMic(!isMuteMic)
+                        muteMic();
+                    }} className={` ${isMuteMic ? "bg-theme-orange text-white" : " bg-theme-grey"} border transform duration-300 hover:shadow-2xl shadow-lg border-transparent rounded-full h-8 w-8 p-1.5`}>
+                        <img src={muteIcon} alt="mute icon" />
+                    </button>
+                    <button onClick={() => {
+                        setIsMuteCam(!isMuteCam)
+                        muteCam();
+                    }} className={`${isMuteCam ? "bg-theme-orange text-white" : " bg-theme-grey"} border transform duration-300 hover:shadow-2xl shadow-lg border-transparent rounded-full h-8 w-8 p-1.5`}>
+                        <img src={videoIcon} onClick={muteCam} alt="video icon" />
+                    </button>
+                    <button onClick={() => {
                         window.location.href = "/"
-                    }} alt="phone icon" />
-                </button>
+                    }} className=" bg-red-600 border border-transparent shadow-2xl rounded-full h-8 w-8 p-1.5">
+                        <img src={phoneIcon} alt="phone icon" />
+                    </button>
+                </div>
             </div>
         </div>
     )

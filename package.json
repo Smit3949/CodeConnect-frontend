@@ -4,7 +4,10 @@
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^1.6.0",
+    "@chakra-ui/react": "^1.6.7",
     "@craco/craco": "^6.2.0",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
     "@iconify/icons-bi": "^1.1.6",
     "@iconify/icons-fluent": "^1.1.23",
     "@iconify/react": "^3.0.0",
@@ -13,6 +16,7 @@
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
     "codemirror": "^5.62.2",
+    "framer-motion": "^4",
     "iconify": "^1.3.0",
     "peerjs": "^1.3.2",
     "react": "^17.0.2",

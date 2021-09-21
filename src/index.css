@@ -54,10 +54,11 @@ body,html{
 }
 
 video{
-  height: 200px;
+  height: 200px !important;
   width: 200px;
   object-fit: cover;
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
 }
 
 /* resizable panels */
@@ -113,6 +114,8 @@ video{
 
 .video-off{
   position: relative;
+  height: 200px;
+  width: 200px;
 }
 
 .video-off:after{
