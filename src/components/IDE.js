@@ -618,7 +618,7 @@ function RightVideoPanel({ muteCam, muteMic }) {
                     People in room
                 </Tag>
                 <div className="justify-between flex-col pt-2 pb-3">
-                    <div style={{ width: "200px", height: "calc(100vh-150px)" }} className="flex flex-col items-center overflow-y-auto justify-start" id="video-grid">
+                    <div style={{ width: "200px" }} className="flex flex-col video-grid-height items-center overflow-y-auto justify-start" id="video-grid">
                     </div>
                     <div className="flex items-center absolute backdrop-filter backdrop-blur left-0 bottom-0 pt-2 rounded-lg pb-4 w-full justify-around mt-2">
                         <button onClick={() => {
