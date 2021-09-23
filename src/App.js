@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import IDE from "./components/IDE";
-import { Login, Logout } from "./components/auth/Auth0";
+// import { Login, Logout } from "./components/auth/Auth0";
 import { useAuth0 } from '@auth0/auth0-react'
+import { Tooltip } from "@chakra-ui/react"
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { v4 as uuidV4 } from 'uuid';
@@ -22,6 +23,7 @@ function App() {
   const [docId, setDocId] = useState(null);
   const [isDocId, setIsDocId] = useState(false);
   const { isAuthenticated, user } = useAuth0();
+  const [isInputBoxShown, setisInputBoxShown] = useState(true);
 
 
   useEffect(() => {
@@ -159,8 +161,8 @@ function App() {
       {
         isDocId ?
           <>
-            <Header userInfo={user} runCode={runCode} isAuthenticated={isAuthenticated} toggleModal={toggleModal} />
-            <IDE docId={docId} modal={modal} toggleModal={toggleModal} setModal={setModal} python={python} setpython={setpython} input={input} setInput={setInput} selected={selected} setSelected={setSelected} output={output} setOutput={setOutput} textEditor={textEditor} setTextEditor={setTextEditor} processing={processing} setProcessing={setProcessing} percentageStage={percentageStage} setPercentageStage={setPercentageStage} />
+            <Header userInfo={user} runCode={runCode} isAuthenticated={isAuthenticated} toggleModal={toggleModal} isInputBoxShown={isInputBoxShown} setisInputBoxShown={setisInputBoxShown} />
+            <IDE docId={docId} modal={modal} toggleModal={toggleModal} setModal={setModal} python={python} setpython={setpython} input={input} setInput={setInput} selected={selected} setSelected={setSelected} output={output} setOutput={setOutput} textEditor={textEditor} setTextEditor={setTextEditor} processing={processing} setProcessing={setProcessing} percentageStage={percentageStage} setPercentageStage={setPercentageStage} isInputBoxShown={isInputBoxShown} />
           </>
           :
           <Preview docId={docId} />
@@ -171,26 +173,43 @@ function App() {
 
 export default App;
 
-function Header({ runCode, toggleModal, isAuthenticated, userInfo }) {
+function Header({ runCode, toggleModal, isAuthenticated, userInfo, isInputBoxShown, setisInputBoxShown }) {
   const [toolTip, showToolTip] = useState(false);
+
+  const toggleInputBox = () => {
+    ReactGA.event({
+      category: `button.clicked`,
+      action: `Input Box ${isInputBoxShown ? "Closed" : "Opened"}`,
+    });
+    setisInputBoxShown(!isInputBoxShown);
+  }
+
   return (
-    <div className=" bg-purple-standard flex py-2 px-2 justify-between items-center">
+    <div className=" bg-purple-standard flex py-2 px-4 justify-between items-center rounded-b-lg custom-shadow-medium">
       <div className="flex items-center">
-        <div className="h-7">
+        <div className="h-7 flex items-center font-medium text-xl codeFont text-orange-standard">
           <img className="h-full" src={'./logo.png'} alt="codeconnect logo" />
+          <span className="ml-2">CodeColab</span>
         </div>
       </div>
       <div className="flex items-center">
-        <button className=" text-white mr-4" onClick={toggleModal}><Icon icon={whiteboard24Regular} className="text-orange-standard" height="28" /></button>
-        <button onClick={runCode} className="bg-orange-standard flex items-center text-base font-medium rounded px-3 py-1 mr-2">
-          <img className="h-3" src={runIcon} alt="run code icon" />
-          <span className="ml-2">Run</span>
-        </button>
-        {
+        <Tooltip label="Input/Output" hasArrow fontSize="md" bg="teal.600">
+          <button className=" text-white mr-4" onClick={toggleInputBox}><Icon icon="bi:input-cursor-text" className="text-orange-standard" height="24" /></button>
+        </Tooltip>
+        <Tooltip label="Whiteboard" hasArrow fontSize="md" bg="teal.600">
+          <button className=" text-white mr-4" onClick={toggleModal}><Icon icon={whiteboard24Regular} className="text-orange-standard" height="28" /></button>
+        </Tooltip>
+        <Tooltip label="Run Code" hasArrow fontSize="sm" bg="teal.600">
+          <button onClick={runCode} className="bg-orange-standard flex items-center text-base font-medium rounded px-3 py-0.5 mr-2">
+            <img className="h-2.5" src={runIcon} alt="run code icon" />
+            <span className="ml-2">Run</span>
+          </button>
+        </Tooltip>
+        {/* {
           isAuthenticated ?
             <Logout /> :
             <Login />
-        }
+        } */}
         <div className="mx-1 relative">
           {
             isAuthenticated &&

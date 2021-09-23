@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from '@auth0/auth0-react';
 import ReactGA from 'react-ga';
+import { ChakraProvider } from "@chakra-ui/react"
 
 const trackingId = process.env.REACT_APP_TRACKING_ID
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
@@ -19,7 +20,9 @@ ReactDOM.render(
       clientId={clientId}
       redirectUri={window.location.origin}
     >
-      <App />
+      <ChakraProvider>
+        <App />
+      </ChakraProvider>
     </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')

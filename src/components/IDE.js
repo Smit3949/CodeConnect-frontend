@@ -9,7 +9,6 @@ import 'codemirror/mode/css/css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/python/python';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import Peer from 'peerjs';
 import closeIcon from '../images/icons/close.png';
 import muteIcon from '../images/icons/mute.svg';
@@ -18,10 +17,11 @@ import phoneIcon from '../images/icons/phone.svg';
 import { Icon } from '@iconify/react';
 import eraser24Filled from '@iconify/icons-fluent/eraser-24-filled';
 import penFill from '@iconify/icons-bi/pen-fill';
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Skeleton, Progress, Tag } from "@chakra-ui/react"
 import 'react-circular-progressbar/dist/styles.css';
 
 
-export default function IDE({ docId, modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage }) {
+export default function IDE({ docId, modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage, isInputBoxShown }) {
     const [socket, setSocket] = useState(null);
     const [cpp, setcpp] = useState('');
     const [java, setjava] = useState('');
@@ -271,12 +271,17 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             setMyvideoon(true);
         }
         myStream.getVideoTracks()[0].enabled = !(myStream.getVideoTracks()[0].enabled);
-        const toggledVideo = document.getElementById(userId);
-        if (myStream.getVideoTracks()[0].enabled) {
-            toggledVideo.classList.remove("video-off");
+        try {
+            const toggledVideo = document.getElementById(userId);
+            if (myStream.getVideoTracks()[0].enabled) {
+                toggledVideo.classList.remove("video-off");
+            }
+            else {
+                toggledVideo.classList.add("video-off");
+            }
         }
-        else {
-            toggledVideo.classList.add("video-off");
+        catch (err) {
+            console.log(err);
         }
 
 
@@ -305,20 +310,25 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
     useEffect(() => {
         if (socket === null) return;
         socket.on('received-toggled-events', (userId, video, audio) => {
-            const toggledVideo = document.getElementById(userId);
+            try {
+                const toggledVideo = document.getElementById(userId);
 
-            if (video) {
-                toggledVideo.classList.remove("video-off");
-            }
-            else {
-                toggledVideo.classList.add("video-off");
-            }
+                if (video) {
+                    toggledVideo.classList.remove("video-off");
+                }
+                else {
+                    toggledVideo.classList.add("video-off");
+                }
 
-            if (audio) {
-                toggledVideo.classList.remove("audio-off");
+                if (audio) {
+                    toggledVideo.classList.remove("audio-off");
+                }
+                else {
+                    toggledVideo.classList.add("audio-off");
+                }
             }
-            else {
-                toggledVideo.classList.add("audio-off");
+            catch (err) {
+                console.log(err);
             }
         });
     }, [socket])
@@ -466,81 +476,83 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             <div className="flex">
                 <div className="h-screen flex flex-grow flex-col">
                     <div className="flex-grow flex">
-                        <div id="editor" className="flex-grow flex flex-col">
+                        <div id="editor" className="flex-grow relative flex flex-col">
                             <FileTabs />
-                            <div className="flex-grow overflow-y-auto" style={{ height: "calc(100vh - 310px)" }}>
-                                {
-                                    selected === 'CPP' &&
-                                    <section className="playground">
-                                        <div className="code-editor-java flex flex-col h-full mb-5 java-code">
-                                            <div className="editor-header">
-                                                <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
+                            <div className="flex duration-500 relative overflow-y-auto px-2 pt-2 pb-4" style={isInputBoxShown ? { height: "94%", maxHeight: "calc(100vh - 10px)" } : { height: "calc(100vh - 310px)" }}>
+                                <div className=" w-full custom-shadow h-full rounded-xl overflow-hidden">
+                                    {
+                                        selected === 'CPP' &&
+                                        <section className="playground">
+                                            <div className="code-editor-java flex flex-col h-full mb-5 java-code">
+                                                <div className="editor-header">
+                                                    <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
+                                                </div>
+                                                <CodeMirror
+                                                    value={cpp}
+                                                    className="flex-grow text-base"
+                                                    options={{
+                                                        mode: "text/x-csrc",
+                                                        theme: 'material',
+                                                        lineNumbers: true,
+                                                        scrollbarStyle: null,
+                                                        lineWrapping: true,
+                                                    }}
+                                                    onBeforeChange={(editor, data, cpp) => {
+                                                        setcpp(cpp);
+                                                    }}
+                                                />
                                             </div>
-                                            <CodeMirror
-                                                value={cpp}
-                                                className="flex-grow text-base"
-                                                options={{
-                                                    mode: "text/x-csrc",
-                                                    theme: 'material',
-                                                    lineNumbers: true,
-                                                    scrollbarStyle: null,
-                                                    lineWrapping: true,
-                                                }}
-                                                onBeforeChange={(editor, data, cpp) => {
-                                                    setcpp(cpp);
-                                                }}
-                                            />
-                                        </div>
-                                    </section>
-                                }
-                                {
-                                    selected === 'JAVA' &&
-                                    <section className="playground">
-                                        <div className="code-editor-java flex flex-col h-full mb-5 java-code">
-                                            <div className="editor-header">
-                                                <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
+                                        </section>
+                                    }
+                                    {
+                                        selected === 'JAVA' &&
+                                        <section className="playground">
+                                            <div className="code-editor-java flex flex-col h-full mb-5 java-code">
+                                                <div className="editor-header">
+                                                    <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
+                                                </div>
+                                                <CodeMirror
+                                                    value={java}
+                                                    className="flex-grow text-base"
+                                                    options={{
+                                                        mode: "text/x-java",
+                                                        theme: 'material',
+                                                        lineNumbers: true,
+                                                        scrollbarStyle: null,
+                                                        lineWrapping: true,
+                                                    }}
+                                                    onBeforeChange={(editor, data, java) => {
+                                                        setjava(java);
+                                                    }}
+                                                />
                                             </div>
-                                            <CodeMirror
-                                                value={java}
-                                                className="flex-grow text-base"
-                                                options={{
-                                                    mode: "text/x-java",
-                                                    theme: 'material',
-                                                    lineNumbers: true,
-                                                    scrollbarStyle: null,
-                                                    lineWrapping: true,
-                                                }}
-                                                onBeforeChange={(editor, data, java) => {
-                                                    setjava(java);
-                                                }}
-                                            />
-                                        </div>
-                                    </section>
-                                }
-                                {
-                                    selected === 'PYTHON' &&
-                                    <section className="playground">
-                                        <div className="code-editor-java flex flex-col h-full mb-5 java-code">
-                                            <div className="editor-header">
-                                                <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
+                                        </section>
+                                    }
+                                    {
+                                        selected === 'PYTHON' &&
+                                        <section className="playground">
+                                            <div className="code-editor-java flex flex-col h-full mb-5 java-code">
+                                                <div className="editor-header">
+                                                    <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
+                                                </div>
+                                                <CodeMirror
+                                                    value={python}
+                                                    className="flex-grow text-base"
+                                                    options={{
+                                                        mode: "python",
+                                                        theme: 'material',
+                                                        lineNumbers: true,
+                                                        scrollbarStyle: null,
+                                                        lineWrapping: true,
+                                                    }}
+                                                    onBeforeChange={(editor, data, python) => {
+                                                        setpython(python);
+                                                    }}
+                                                />
                                             </div>
-                                            <CodeMirror
-                                                value={python}
-                                                className="flex-grow text-base"
-                                                options={{
-                                                    mode: "python",
-                                                    theme: 'material',
-                                                    lineNumbers: true,
-                                                    scrollbarStyle: null,
-                                                    lineWrapping: true,
-                                                }}
-                                                onBeforeChange={(editor, data, python) => {
-                                                    setpython(python);
-                                                }}
-                                            />
-                                        </div>
-                                    </section>
-                                }
+                                        </section>
+                                    }
+                                </div>
                             </div>
                             <div className={`flex-grow ${modal ? "top-0" : " top-full"} duration-300 left-0 p-4 backdrop-filter backdrop-blur-sm absolute z-50 w-screen h-screen`}>
                                 <div ref={colorsRef} className="colors absolute flex select-none left-10 top-10">
@@ -551,44 +563,37 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                                     <img onClick={toggleModal} src={closeIcon} className="w-6 cursor-pointer" alt="close icon" />
                                 </div>
 
-                                <canvas id="whiteboard-canvas" className="m-0 border h-full w-full bg-white rounded-xl border-black" />
+                                <canvas id="whiteboard-canvas" style={{ height: "90%" }} className="m-0 border w-full bg-white rounded-xl border-black" />
                             </div>
-                            <div className="h-64 flex flex-col bg-gray-standard">
-                                <div className="flex items-center justify-evenly text-center duration-100">
-                                    <div onClick={() => {
-                                        setTextEditor('input')
-                                    }}
-                                        className={` cursor-pointer w-1/2 ${(textEditor === 'input' ? "hover:opacity-90 border-black" : " hover:opacity-60 border-transparent opacity-50")} border-r  bg-orange-standard`}>Input</div>
-                                    <div
-                                        onClick={() => {
-                                            setTextEditor('output')
-                                        }}
-                                        className={`cursor-pointer w-1/2 ${(textEditor === 'output' ? "hover:opacity-90 border-black" : " hover:opacity-60 border-transparent opacity-50")} border-l bg-orange-standard`}>Output</div>
-                                </div>
-                                <div className="w-full flex-grow p-4 relative">
-                                    {
-                                        textEditor === 'input' ?
-                                            <textarea className="rounded-md outline-none shadow-md w-full h-full p-4 resize-none" placeholder="enter an input..." onChange={(e) => { setInput(e.target.value) }} value={input} rows="4" cols="50">
-                                            </textarea>
-                                            : <textarea className={` ${processing ? "transform animate-pulse" : ""} rounded-md outline-none shadow-md w-full h-full p-4 resize-none`} readOnly placeholder="output will be shown here" value={output} rows="4" cols="50">
-                                            </textarea>
-                                    }
-                                    {
-                                        processing &&
-                                        <div className="absolute z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
-                                            <CircularProgressbar styles={buildStyles({
-                                                rotation: 0.25,
-                                                strokeLinecap: 'butt',
-                                                textSize: '22px',
-                                                pathTransitionDuration: 0.5,
-                                                pathColor: `#EE9B00`,
-                                                textColor: '#EE9B00'
-                                            })} className="h-20" value={percentageStage} text={`${percentageStage}%`} />
-                                        </div>
-                                    }
+                            <div className={`${isInputBoxShown ? "absolute w-full bottom-0 left-0 transform translate-y-full" : ""} duration-500`}>
+                                <div className="shadow-lg border-2 border-opacity-50 border-theme-teal-dark mx-2 rounded-xl">
+                                    <Tabs index={textEditor === "input" ? 0 : 1} isFitted variant="line" colorScheme="#224f5c50">
+                                        <TabList>
+                                            <Tab onClick={() => {
+                                                setTextEditor("input");
+                                            }} className=" font-semibold ">Input</Tab>
+                                            <Tab onClick={() => {
+                                                setTextEditor("output");
+                                            }} className=" font-semibold ">Output</Tab>
+                                        </TabList>
+                                        <TabPanels>
+                                            <TabPanel paddingX="2" paddingBottom="2" paddingTop="0" >
+                                                <textarea className="  rounded-md outline-none w-full h-full p-4 resize-none" placeholder="enter an input..." onChange={(e) => { setInput(e.target.value) }} value={input} rows="4" cols="50">
+                                                </textarea>
+                                            </TabPanel>
+                                            <TabPanel paddingX="0" paddingY="0" className="relative" >
+                                                {processing && <Progress colorScheme="teal" size="sm" value={percentageStage} className="mb-1" />}
+                                                <Skeleton isLoaded={!processing} className="rounded-xl px-2">
+                                                    <textarea className={` ${processing ? "transform animate-pulse" : ""} rounded-md outline-none w-full h-full pt-4 pb-6 px-6 resize-none`} readOnly placeholder="output will be shown here" value={output} rows="4" cols="50">
+                                                    </textarea>
+                                                </Skeleton>
+                                            </TabPanel>
+                                        </TabPanels>
+                                    </Tabs>
                                 </div>
                                 <input accept="text/plain" type="file" onChange={handleFileDataChange} className="hidden" id="input-file-upload" />
-                                <div onClick={handleInputFileChange} className="mb-4 text-orange-standard w-full text-center cursor-pointer"><span className="hover:opacity-70">... or upload an file</span></div>
+                                <div onClick={handleInputFileChange} className="mt-4 text-theme-teal-dark font-semibold w-full text-center cursor-pointer"><span className="hover:opacity-70">... or upload an file</span></div>
+
                             </div>
                         </div>
                         <RightVideoPanel muteCam={muteCam} muteMic={muteMic} />
@@ -603,23 +608,38 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
 
 function RightVideoPanel({ muteCam, muteMic }) {
 
+    const [isMuteCam, setIsMuteCam] = useState(false)
+    const [isMuteMic, setIsMuteMic] = useState(false)
+
     return (
-        <div style={{ height: "calc(100vh - 47px)" }} className="flex flex-col items-center relative p-2 bg-purple-dark shadow-lg">
-            {/* <button><img className="h-4 my-2" src={upArrow} alt="scroll up arrow" /></button> */}
-            <div className="flex flex-col items-center overflow-y-auto justify-center pb-10" id="video-grid"></div>
-            {/* <button><img className="h-4 my-2 transform rotate-180" src={upArrow} alt="scroll down arrow" /></button> */}
-            <div className="flex items-center backdrop-filter backdrop-blur absolute left-0 bottom-0 pt-2 rounded-lg pb-4 w-full justify-around mt-2">
-                <button className="bg-orange-standard border border-r rounded-full h-8 w-8 p-1.5">
-                    <img src={muteIcon} alt="mute icon" />
-                </button>
-                <button className="bg-orange-standard border border-r rounded-full h-8 w-8 p-1.5">
-                    <img src={videoIcon} onClick={muteCam} alt="video icon" />
-                </button>
-                <button className="bg-orange-standard border border-r rounded-full h-8 w-8 p-1.5">
-                    <img src={phoneIcon} onClick={() => {
-                        window.location.href = "/"
-                    }} alt="phone icon" />
-                </button>
+        <div style={{ height: "calc(100vh - 47px)" }} className="overflow-hidden duration-300 bg-transparent px-2 pt-2 pb-3 flex flex-col items-center justify-start">
+            <div className="flex overflow-hidden custom-shadow-light h-full rounded-lg justify-start items-center flex-col  bg-teal-standard bg-opacity-100 relative pt-2 px-2 shadow-lg">
+                <Tag size={"md"} variant="solid" w="full" colorScheme="teal">
+                    People in room
+                </Tag>
+                <div className="justify-between flex-col pt-2 pb-3">
+                    <div style={{ width: "200px", height: "calc(100vh-150px)" }} className="flex flex-col items-center overflow-y-auto justify-start" id="video-grid">
+                    </div>
+                    <div className="flex items-center absolute backdrop-filter backdrop-blur left-0 bottom-0 pt-2 rounded-lg pb-4 w-full justify-around mt-2">
+                        <button onClick={() => {
+                            setIsMuteMic(!isMuteMic)
+                            muteMic();
+                        }} className={` ${isMuteMic ? "bg-theme-orange text-white" : " bg-theme-grey"} border transform duration-300 hover:shadow-2xl shadow-lg border-transparent rounded-full h-8 w-8 p-1.5`}>
+                            <img src={muteIcon} alt="mute icon" />
+                        </button>
+                        <button onClick={() => {
+                            setIsMuteCam(!isMuteCam)
+                            muteCam();
+                        }} className={`${isMuteCam ? "bg-theme-orange text-white" : " bg-theme-grey"} border transform duration-300 hover:shadow-2xl shadow-lg border-transparent rounded-full h-8 w-8 p-1.5`}>
+                            <img src={videoIcon} alt="video icon" />
+                        </button>
+                        <button onClick={() => {
+                            window.location.href = "/"
+                        }} className=" bg-red-600 border border-transparent shadow-2xl rounded-full h-8 w-8 p-1.5">
+                            <img src={phoneIcon} alt="phone icon" />
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     )
