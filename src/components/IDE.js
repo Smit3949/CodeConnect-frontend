@@ -27,7 +27,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel, Skeleton, Progress, Tag } from
 import 'react-circular-progressbar/dist/styles.css';
 
 
-export default function IDE({ docId, modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage, isInputBoxShown }) {
+export default function IDE({ docId, modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage, isInputBoxShown, setOutput }) {
     const [socket, setSocket] = useState(null);
     const [cpp, setcpp] = useState('');
     const [java, setjava] = useState('');
@@ -49,6 +49,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
     const colorsRef = useRef(null);
     const [userId, setUserId] = useState(null);
     const [myvideoon, setMyvideoon] = useState(true);
+    const [pencilColor, setPencilColor] = useState('#000000');
 
 
     useEffect(() => {
@@ -80,12 +81,29 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             setphp(data.php);
             setperl(data.perl);
             setruby(data.ruby);
+            setInput(data.input);
+            setOutput(data.output);
         });
         // eslint-disable-next-line
     }, [socket, docId]);
 
 
-    
+
+    useEffect(() => {
+        if (socket === null) return;
+        var updateC = (delta) => {
+            setpython(delta.python);
+            setjava(delta.java);
+            setcpp(delta.cpp);
+            setInput(delta.input);
+            setOutput(delta.output);
+        }
+        socket.on('receive-changes', updateC);
+        return () => {
+            socket.off('receive-changes', updateC);
+        }
+        // eslint-disable-next-line
+    }, [socket, cpp, java, python, input, output]);
 
     useEffect(() => {
         if (socket === null) return;
@@ -98,7 +116,9 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             'perl': perl,
             'php': php,
             'ruby': ruby,
-            'pascal': pascal
+            'pascal': pascal,
+            'input': input,
+            'output': output
         };
 
         var savetodb = setTimeout(() => { socket.emit('save-document', data); socket.emit('changes', data); }, 2000);
@@ -118,7 +138,8 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             clearTimeout(savetodb);
         };
 
-    }, [socket, cpp, java, js, pascal, php, perl, ruby, python]);
+    }, [socket, cpp, java, js, pascal, php, perl, ruby, python, input,output]);
+
 
 
     function addVideoStream(videoCont, video, stream) {
@@ -354,17 +375,28 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
 
 
     useEffect(() => {
+        if (socket === null) return;
+        console.log("in");
+        socket.emit('pencil-color-change', pencilColor);
+        socket.on('pencil-color-change', (color) => {
+            console.log(color);
+            setPencilColor(color);
+        })
+    }, [pencilColor]);
+
+    useEffect(() => {
 
 
         if (socket === null || colorsRef === null) return;
         const canvas = document.getElementById('whiteboard-canvas')
         const context = canvas.getContext('2d');
+        const colorPicker = document.getElementById('pencil-color-picker');
 
         const colors = document.getElementsByClassName('color');
         // console.log(colors, 'the colors');
         // console.log(test);
         const current = {
-            color: 'black',
+            color: '#000000',
             width: 5,
         };
 
@@ -372,17 +404,28 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             let objectColor;
             for (let i = 0; i < e.path.length; i++) {
                 if (e.path[i].dataset.color) {
-                    objectColor = e.path[i].dataset.color;
+                    if (e.path[i].dataset.color === "white") objectColor = "#ffffff"
+                    else objectColor = pencilColor;
                     break;
                 }
             }
             current.color = objectColor;
-            if (current.color === 'black') current.width = 5;
+            if (current.color !== '#ffffff') current.width = 5;
             else current.width = 25;
         };
 
+        const onPencilColorChange = (e) => {
+            setPencilColor(e.target.value);
+            current.color = e.target.value;
+            if (current.color !== '#ffffff') current.width = 5;
+            else current.width = 25;
+        }
+
         for (let i = 0; i < colors.length; i++) {
+            colors[i].removeEventListener('click', onColorUpdate);
+            colorPicker.removeEventListener('change', onPencilColorChange);
             colors[i].addEventListener('click', onColorUpdate, false);
+            colorPicker.addEventListener('change', onPencilColorChange, false);
         }
         let drawing = false;
 
@@ -407,7 +450,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                 y0: y0 / h,
                 x1: x1 / w,
                 y1: y1 / h,
-                color,
+                pencilColor,
                 width
             });
         };
@@ -661,6 +704,8 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                                 <div ref={colorsRef} className="colors absolute flex select-none left-10 top-10">
                                     <Icon icon={penFill} data-color="black" className="block cursor-pointer color black text-orange-standard" height="28" />
                                     <Icon icon={eraser24Filled} data-color="white" className="block cursor-pointer color white ml-4" height="30" />
+                                    {/* color picker input element */}
+                                    <input type="color" className="" id="pencil-color-picker" />
                                 </div>
                                 <div className="absolute right-10 select-none top-10">
                                     <img onClick={toggleModal} src={closeIcon} className="w-6 cursor-pointer" alt="close icon" />
