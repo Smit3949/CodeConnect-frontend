@@ -9,6 +9,12 @@ import 'codemirror/mode/css/css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/python/python';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/pascal/pascal';
+import 'codemirror/mode/perl/perl';
+import 'codemirror/mode/php/php';
+import 'codemirror/mode/ruby/ruby';
+
 import Peer from 'peerjs';
 import closeIcon from '../images/icons/close.png';
 import muteIcon from '../images/icons/mute.svg';
@@ -25,6 +31,11 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
     const [socket, setSocket] = useState(null);
     const [cpp, setcpp] = useState('');
     const [java, setjava] = useState('');
+    const [js, setjs] = useState('');
+    const [pascal, setpascal] = useState('');
+    const [perl, setperl] = useState('');
+    const [php, setphp] = useState('');
+    const [ruby, setruby] = useState('');
     const [peer, setPeer] = useState(null);
     const userName = 'smit'
     const videoGrid = document.getElementById('video-grid');
@@ -65,11 +76,17 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             setcpp(data.cpp);
             setjava(data.java);
             setpython(data.python);
+            setjs(data.js);
+            setpascal(data.pascal);
+            setphp(data.php);
+            setperl(data.perl);
+            setruby(data.ruby);
             setInput(data.input);
             setOutput(data.output);
         });
         // eslint-disable-next-line
     }, [socket, docId]);
+
 
 
     useEffect(() => {
@@ -90,21 +107,39 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
 
     useEffect(() => {
         if (socket === null) return;
+        
         var data = {
             'cpp': cpp,
             'java': java,
             'python': python,
+            'js': js,
+            'perl': perl,
+            'php': php,
+            'ruby': ruby,
+            'pascal': pascal,
             'input': input,
             'output': output
         };
 
         var savetodb = setTimeout(() => { socket.emit('save-document', data); socket.emit('changes', data); }, 2000);
-
+        var updateC = (delta) => {
+            setpython(delta.python);
+            setjava(delta.java);
+            setcpp(delta.cpp);
+            setjs(delta.js);
+            setpascal(delta.pascal);
+            setphp(delta.php);
+            setperl(delta.perl);
+            setruby(delta.ruby);
+        }
+        socket.on('receive-changes', updateC);
         return () => {
+            socket.off('receive-changes', updateC);
             clearTimeout(savetodb);
         };
 
-    }, [socket, cpp, java, python, input, output]);
+    }, [socket, cpp, java, js, pascal, php, perl, ruby, python, input,output]);
+
 
 
     function addVideoStream(videoCont, video, stream) {
@@ -399,7 +434,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             context.beginPath();
             context.moveTo(x0, y0);
             context.lineTo(x1, y1);
-            context.strokeStyle = color;
+            context.strokeStyle = color; 
             context.lineWidth = width;
             context.stroke();
             context.closePath();
@@ -507,75 +542,159 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                             <FileTabs />
                             <div className="flex duration-500 relative overflow-y-auto px-2 pt-2 pb-4" style={isInputBoxShown ? { height: "94%", maxHeight: "calc(100vh - 10px)" } : { height: "calc(100vh - 310px)" }}>
                                 <div className=" w-full custom-shadow h-full rounded-xl overflow-hidden">
+                                    
                                     {
-                                        selected === 'CPP' &&
+                                        
                                         <section className="playground">
                                             <div className="code-editor-java flex flex-col h-full mb-5 java-code">
                                                 <div className="editor-header">
                                                     <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
                                                 </div>
-                                                <CodeMirror
-                                                    value={cpp}
-                                                    className="flex-grow text-base"
-                                                    options={{
-                                                        mode: "text/x-csrc",
-                                                        theme: 'material',
-                                                        lineNumbers: true,
-                                                        scrollbarStyle: null,
-                                                        lineWrapping: true,
-                                                    }}
-                                                    onBeforeChange={(editor, data, cpp) => {
-                                                        setcpp(cpp);
-                                                    }}
-                                                />
-                                            </div>
-                                        </section>
-                                    }
-                                    {
-                                        selected === 'JAVA' &&
-                                        <section className="playground">
-                                            <div className="code-editor-java flex flex-col h-full mb-5 java-code">
-                                                <div className="editor-header">
-                                                    <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
-                                                </div>
-                                                <CodeMirror
-                                                    value={java}
-                                                    className="flex-grow text-base"
-                                                    options={{
-                                                        mode: "text/x-java",
-                                                        theme: 'material',
-                                                        lineNumbers: true,
-                                                        scrollbarStyle: null,
-                                                        lineWrapping: true,
-                                                    }}
-                                                    onBeforeChange={(editor, data, java) => {
-                                                        setjava(java);
-                                                    }}
-                                                />
-                                            </div>
-                                        </section>
-                                    }
-                                    {
-                                        selected === 'PYTHON' &&
-                                        <section className="playground">
-                                            <div className="code-editor-java flex flex-col h-full mb-5 java-code">
-                                                <div className="editor-header">
-                                                    <LanguageSelector language={selected.toLowerCase()} setLanguage={setSelected} />
-                                                </div>
-                                                <CodeMirror
-                                                    value={python}
-                                                    className="flex-grow text-base"
-                                                    options={{
-                                                        mode: "python",
-                                                        theme: 'material',
-                                                        lineNumbers: true,
-                                                        scrollbarStyle: null,
-                                                        lineWrapping: true,
-                                                    }}
-                                                    onBeforeChange={(editor, data, python) => {
-                                                        setpython(python);
-                                                    }}
-                                                />
+                                                {
+                                                    selected === 'python' && <CodeMirror
+                                                        value={
+                                                            python
+                                                        }
+                                                        className="flex-grow text-base"
+                                                        options={{
+                                                            mode: 'python',
+                                                            theme: 'material',
+                                                            lineNumbers: true,
+                                                            scrollbarStyle: null,
+                                                            lineWrapping: true,
+                                                        }}
+                                                        onBeforeChange={(editor, data, changes) => {
+                                                            setpython(changes);
+                                                        }}
+                                                    />
+                                                }
+                                                {
+                                                    selected === 'cpp' && <CodeMirror
+                                                        value={
+                                                            cpp
+                                                        }
+                                                        className="flex-grow text-base"
+                                                        options={{
+                                                            mode: 'text/x-csrc',
+                                                            theme: 'material',
+                                                            lineNumbers: true,
+                                                            scrollbarStyle: null,
+                                                            lineWrapping: true,
+                                                        }}
+                                                        onBeforeChange={(editor, data, changes) => {
+                                                            setcpp(changes);
+                                                        }}
+                                                    />
+                                                }
+                                                {
+                                                    selected === 'java' && <CodeMirror
+                                                        value={
+                                                            java
+                                                        }
+                                                        className="flex-grow text-base"
+                                                        options={{
+                                                            mode: 'text/x-java',
+                                                            theme: 'material',
+                                                            lineNumbers: true,
+                                                            scrollbarStyle: null,
+                                                            lineWrapping: true,
+                                                        }}
+                                                        onBeforeChange={(editor, data, changes) => {
+                                                            setjava(changes);
+                                                        }}
+                                                    />
+                                                }
+                                                {
+                                                    selected === 'js' && <CodeMirror
+                                                        value={
+                                                            js
+                                                        }
+                                                        className="flex-grow text-base"
+                                                        options={{
+                                                            mode: 'javascript',
+                                                            theme: 'material',
+                                                            lineNumbers: true,
+                                                            scrollbarStyle: null,
+                                                            lineWrapping: true,
+                                                        }}
+                                                        onBeforeChange={(editor, data, changes) => {
+                                                            setjs(changes);
+                                                        }}
+                                                    />
+                                                }
+                                                {
+                                                    selected === 'pascal' && <CodeMirror
+                                                        value={
+                                                            pascal
+                                                        }
+                                                        className="flex-grow text-base"
+                                                        options={{
+                                                            mode: 'pascal',
+                                                            theme: 'material',
+                                                            lineNumbers: true,
+                                                            scrollbarStyle: null,
+                                                            lineWrapping: true,
+                                                        }}
+                                                        onBeforeChange={(editor, data, changes) => {
+                                                            setpascal(changes);
+                                                        }}
+                                                    />
+                                                }
+                                                {
+                                                    selected === 'ruby' && <CodeMirror
+                                                        value={
+                                                            ruby
+                                                        }
+                                                        className="flex-grow text-base"
+                                                        options={{
+                                                            mode: 'ruby',
+                                                            theme: 'material',
+                                                            lineNumbers: true,
+                                                            scrollbarStyle: null,
+                                                            lineWrapping: true,
+                                                        }}
+                                                        onBeforeChange={(editor, data, changes) => {
+                                                            setruby(changes);
+                                                        }}
+                                                    />
+                                                }
+                                                {
+                                                    selected === 'php' && <CodeMirror
+                                                        value={
+                                                            php
+                                                        }
+                                                        className="flex-grow text-base"
+                                                        options={{
+                                                            mode: 'php',
+                                                            theme: 'material',
+                                                            lineNumbers: true,
+                                                            scrollbarStyle: null,
+                                                            lineWrapping: true,
+                                                        }}
+                                                        onBeforeChange={(editor, data, changes) => {
+                                                            setphp(changes);
+                                                        }}
+                                                    />
+                                                }
+                                                {
+                                                    selected === 'perl' && <CodeMirror
+                                                        value={
+                                                            perl
+                                                        }
+                                                        className="flex-grow text-base"
+                                                        options={{
+                                                            mode: 'perl',
+                                                            theme: 'material',
+                                                            lineNumbers: true,
+                                                            scrollbarStyle: null,
+                                                            lineWrapping: true,
+                                                        }}
+                                                        onBeforeChange={(editor, data, changes) => {
+                                                            setperl(changes);
+                                                        }}
+                                                    />
+                                                }
+                                                
                                             </div>
                                         </section>
                                     }
@@ -677,11 +796,16 @@ function RightVideoPanel({ muteCam, muteMic }) {
 function LanguageSelector({ language, setLanguage }) {
     return (
         <select className="text-white cursor-pointer bg-transparent" onChange={(e) => {
-            setLanguage(e.target.value.toUpperCase())
+            setLanguage(e.target.value)
         }} value={language} name="language-selector">
-            <option value="python">python</option>
-            <option value="cpp">cpp</option>
-            <option value="java">java</option>
+            <option className="bg-theme-dark-blue" value="cpp">cpp</option>
+            <option className="bg-theme-dark-blue" value="python">python</option>
+            <option className="bg-theme-dark-blue" value="java">java</option>
+            <option className="bg-theme-dark-blue" value="js">js</option>
+            <option className="bg-theme-dark-blue" value="perl">perl</option>
+            <option className="bg-theme-dark-blue" value="php">php</option>
+            <option className="bg-theme-dark-blue" value="ruby">ruby</option>
+            <option className="bg-theme-dark-blue" value="pascal">pascal</option>
         </select>
     )
 }

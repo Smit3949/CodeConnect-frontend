@@ -11,11 +11,13 @@ import runIcon from './images/icons/run.svg';
 import whiteboard24Regular from '@iconify/icons-fluent/whiteboard-24-regular';
 import Preview from './components/Preview';
 
+
+
 function App() {
   const [textEditor, setTextEditor] = useState('input');
   const [processing, setProcessing] = useState(false);
   const [percentageStage, setPercentageStage] = useState(0);
-  const [selected, setSelected] = useState('PYTHON');
+  const [selected, setSelected] = useState('python');
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [python, setpython] = useState('');
