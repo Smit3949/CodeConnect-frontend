@@ -61,6 +61,7 @@ function App() {
     setTextEditor('output');
     setProcessing(true);
     setPercentageStage(10);
+    setisInputBoxShown(false);
 
     var lang = selected;
     const backend_url = process.env.REACT_APP_BACKEND_ENDPOINT_URL + "/runcode";
