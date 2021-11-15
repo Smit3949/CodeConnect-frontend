@@ -18,7 +18,7 @@ function App() {
   const [output, setOutput] = useState('');
   const [processing, setProcessing] = useState(false);
   const [percentageStage, setPercentageStage] = useState(0);
-  const [selected, setSelected] = useState('PYTHON');
+  const [selected, setSelected] = useState('python');
   const [input, setInput] = useState('');
   const [python, setpython] = useState('');
   const [modal, setModal] = useState(false);
