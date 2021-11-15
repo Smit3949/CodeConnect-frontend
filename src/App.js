@@ -13,11 +13,11 @@ import Preview from './components/Preview';
 
 function App() {
   const [textEditor, setTextEditor] = useState('input');
-  const [output, setOutput] = useState('');
   const [processing, setProcessing] = useState(false);
   const [percentageStage, setPercentageStage] = useState(0);
   const [selected, setSelected] = useState('PYTHON');
   const [input, setInput] = useState('');
+  const [output, setOutput] = useState('');
   const [python, setpython] = useState('');
   const [modal, setModal] = useState(false);
   const [docId, setDocId] = useState(null);
@@ -61,6 +61,7 @@ function App() {
     setTextEditor('output');
     setProcessing(true);
     setPercentageStage(10);
+    setisInputBoxShown(false);
 
     var lang = selected;
     const backend_url = process.env.REACT_APP_BACKEND_ENDPOINT_URL + "/runcode";
