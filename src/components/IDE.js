@@ -21,7 +21,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel, Skeleton, Progress, Tag } from
 import 'react-circular-progressbar/dist/styles.css';
 
 
-export default function IDE({ docId, modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage, isInputBoxShown }) {
+export default function IDE({ docId, modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage, isInputBoxShown, setOutput }) {
     const [socket, setSocket] = useState(null);
     const [cpp, setcpp] = useState('');
     const [java, setjava] = useState('');
@@ -64,6 +64,8 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             setcpp(data.cpp);
             setjava(data.java);
             setpython(data.python);
+            setInput(data.input);
+            setOutput(data.output);
         });
         // eslint-disable-next-line
     }, [socket, docId]);
@@ -75,22 +77,24 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             setpython(delta.python);
             setjava(delta.java);
             setcpp(delta.cpp);
-            setcpp(delta.cpp);
-            setcpp(delta.cpp);
+            setInput(delta.input);
+            setOutput(delta.output);
         }
         socket.on('receive-changes', updateC);
         return () => {
             socket.off('receive-changes', updateC);
         }
         // eslint-disable-next-line
-    }, [socket, cpp, java, python]);
+    }, [socket, cpp, java, python, input, output]);
 
     useEffect(() => {
         if (socket === null) return;
         var data = {
             'cpp': cpp,
             'java': java,
-            'python': python
+            'python': python,
+            'input': input,
+            'output': output
         };
 
         var savetodb = setTimeout(() => { socket.emit('save-document', data); socket.emit('changes', data); }, 2000);
@@ -99,7 +103,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             clearTimeout(savetodb);
         };
 
-    }, [socket, cpp, java, python]);
+    }, [socket, cpp, java, python, input, output]);
 
 
     function addVideoStream(videoCont, video, stream) {
