@@ -107,7 +107,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
 
     useEffect(() => {
         if (socket === null) return;
-        
+
         var data = {
             'cpp': cpp,
             'java': java,
@@ -138,7 +138,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             clearTimeout(savetodb);
         };
 
-    }, [socket, cpp, java, js, pascal, php, perl, ruby, python, input,output]);
+    }, [socket, cpp, java, js, pascal, php, perl, ruby, python, input, output]);
 
 
 
@@ -371,18 +371,10 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                 console.log(err);
             }
         });
-    }, [socket])
+    }, [socket]);
 
 
-    useEffect(() => {
-        if (socket === null) return;
-        console.log("in");
-        socket.emit('pencil-color-change', pencilColor);
-        socket.on('pencil-color-change', (color) => {
-            console.log(color);
-            setPencilColor(color);
-        })
-    }, [pencilColor]);
+
 
     useEffect(() => {
 
@@ -434,7 +426,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
             context.beginPath();
             context.moveTo(x0, y0);
             context.lineTo(x1, y1);
-            context.strokeStyle = color; 
+            context.strokeStyle = color;
             context.lineWidth = width;
             context.stroke();
             context.closePath();
@@ -542,9 +534,9 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                             <FileTabs />
                             <div className="flex duration-500 relative overflow-y-auto px-2 pt-2 pb-4" style={isInputBoxShown ? { height: "94%", maxHeight: "calc(100vh - 10px)" } : { height: "calc(100vh - 310px)" }}>
                                 <div className=" w-full custom-shadow h-full rounded-xl overflow-hidden">
-                                    
+
                                     {
-                                        
+
                                         <section className="playground">
                                             <div className="code-editor-java flex flex-col h-full mb-5 java-code">
                                                 <div className="editor-header">
@@ -694,7 +686,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                                                         }}
                                                     />
                                                 }
-                                                
+
                                             </div>
                                         </section>
                                     }
