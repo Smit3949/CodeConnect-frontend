@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600;700&display=swap');
-
+@import url('https://unpkg.com/firacode@1.205.0/distr/fira_code.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +9,7 @@ body,html{
 }
 
 .codeFont{
-  font-family: 'Source Code Pro', monospace;
+  font-family: 'Fira Code', monospace;
 }
 
 .playground {
