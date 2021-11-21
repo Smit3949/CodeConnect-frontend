@@ -544,7 +544,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'python',
-                                                            theme: 'material',
+                                                            theme: 'panda-syntax',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -562,7 +562,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-csrc',
-                                                            theme: 'material',
+                                                            theme: 'panda-syntax',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -580,7 +580,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-java',
-                                                            theme: 'material',
+                                                            theme: 'panda-syntax',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -598,7 +598,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/ecmascript',
-                                                            theme: 'material',
+                                                            theme: 'panda-syntax',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -616,7 +616,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-pascal',
-                                                            theme: 'material',
+                                                            theme: 'panda-syntax',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -634,7 +634,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-ruby',
-                                                            theme: 'material',
+                                                            theme: 'panda-syntax',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -652,7 +652,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-php',
-                                                            theme: 'material',
+                                                            theme: 'panda-syntax',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -670,7 +670,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-perl',
-                                                            theme: 'material',
+                                                            theme: 'panda-syntax',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
