@@ -21,6 +21,13 @@ function App() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [python, setpython] = useState('');
+  const [cpp, setcpp] = useState('');
+  const [java, setjava] = useState('');
+  const [js, setjs] = useState('');
+  const [pascal, setpascal] = useState('');
+  const [perl, setperl] = useState('');
+  const [php, setphp] = useState('');
+  const [ruby, setruby] = useState('');
   const [modal, setModal] = useState(false);
   const [docId, setDocId] = useState(null);
   const [isDocId, setIsDocId] = useState(false);
@@ -67,10 +74,35 @@ function App() {
 
     var lang = selected;
     const backend_url = process.env.REACT_APP_BACKEND_ENDPOINT_URL + "/runcode";
-
+    var source = "print(1)";
+    if (lang === "python") {
+      source = python;
+    }
+    else if (lang === "cpp") {
+      source = cpp;
+    }
+    else if (lang === "java") {
+      source = java;
+    }
+    else if (lang === "javascript") {
+      source = js;
+    }
+    else if (lang === "pascal") {
+      source = pascal;
+    }
+    else if (lang === "perl") {
+      source = perl;
+    }
+    else if (lang === "php") {
+      source = php;
+    }
+    else if (lang === "ruby") {
+      source = ruby;
+    }
+    if (lang === "javascript") lang = "javascript_node";
     var data = {
       "lang": lang.toUpperCase(),
-      "source": python,
+      "source": source,
       "input": input,
       "memory_limit": 243232,
       "time_limit": 5,
@@ -165,7 +197,7 @@ function App() {
         isDocId ?
           <>
             <Header userInfo={user} runCode={runCode} isAuthenticated={isAuthenticated} toggleModal={toggleModal} isInputBoxShown={isInputBoxShown} setisInputBoxShown={setisInputBoxShown} />
-            <IDE docId={docId} modal={modal} toggleModal={toggleModal} setModal={setModal} python={python} setpython={setpython} input={input} setInput={setInput} selected={selected} setSelected={setSelected} output={output} setOutput={setOutput} textEditor={textEditor} setTextEditor={setTextEditor} processing={processing} setProcessing={setProcessing} percentageStage={percentageStage} setPercentageStage={setPercentageStage} isInputBoxShown={isInputBoxShown} />
+            <IDE docId={docId} modal={modal} java={java} setjava={ setjava } toggleModal={toggleModal} setModal={setModal} cpp={cpp} setcpp={setcpp} js={js} setjs={setjs} php={php} setphp={setphp} perl={perl} setperl={setperl} ruby={ruby} setruby={setruby} pascal={pascal} setpascal={ setpascal} python={python} setpython={setpython} input={input} setInput={setInput} selected={selected} setSelected={setSelected} output={output} setOutput={setOutput} textEditor={textEditor} setTextEditor={setTextEditor} processing={processing} setProcessing={setProcessing} percentageStage={percentageStage} setPercentageStage={setPercentageStage} isInputBoxShown={isInputBoxShown} />
           </>
           :
           <Preview docId={docId} />

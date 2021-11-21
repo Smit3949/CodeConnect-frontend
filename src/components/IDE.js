@@ -27,15 +27,9 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel, Skeleton, Progress, Tag } from
 import 'react-circular-progressbar/dist/styles.css';
 
 
-export default function IDE({ docId, modal, toggleModal, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage, isInputBoxShown, setOutput }) {
+export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setjava, js, setjs, php, setphp, pascal, setpascal, perl, setperl, ruby, setruby, python, setpython, input, setInput, selected, setSelected, output, textEditor, setTextEditor, processing, percentageStage, isInputBoxShown, setOutput }) {
     const [socket, setSocket] = useState(null);
-    const [cpp, setcpp] = useState('');
-    const [java, setjava] = useState('');
-    const [js, setjs] = useState('');
-    const [pascal, setpascal] = useState('');
-    const [perl, setperl] = useState('');
-    const [php, setphp] = useState('');
-    const [ruby, setruby] = useState('');
+    
     const [peer, setPeer] = useState(null);
     const userName = 'smit'
     const videoGrid = document.getElementById('video-grid');
@@ -597,7 +591,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                                                     />
                                                 }
                                                 {
-                                                    selected === 'js' && <CodeMirror
+                                                    selected === 'javascript' && <CodeMirror
                                                         value={
                                                             js
                                                         }
@@ -793,7 +787,7 @@ function LanguageSelector({ language, setLanguage }) {
             <option className="bg-theme-dark-blue" value="cpp">cpp</option>
             <option className="bg-theme-dark-blue" value="python">python</option>
             <option className="bg-theme-dark-blue" value="java">java</option>
-            <option className="bg-theme-dark-blue" value="js">js</option>
+            <option className="bg-theme-dark-blue" value="javascript">javascript</option>
             <option className="bg-theme-dark-blue" value="perl">perl</option>
             <option className="bg-theme-dark-blue" value="php">php</option>
             <option className="bg-theme-dark-blue" value="ruby">ruby</option>
