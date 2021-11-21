@@ -69,7 +69,7 @@ function App() {
     const backend_url = process.env.REACT_APP_BACKEND_ENDPOINT_URL + "/runcode";
 
     var data = {
-      "lang": lang,
+      "lang": lang.toUpperCase(),
       "source": python,
       "input": input,
       "memory_limit": 243232,
