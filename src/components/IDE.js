@@ -4,6 +4,7 @@ import { Controlled as CodeMirror } from 'react-codemirror2';
 import ReactGA from 'react-ga';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
+import 'codemirror/theme/dracula.css';
 import 'codemirror/theme/panda-syntax.css';
 import 'codemirror/mode/htmlmixed/htmlmixed';
 import 'codemirror/mode/css/css';
@@ -545,7 +546,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'python',
-                                                            theme: 'panda-syntax',
+                                                            theme: 'dracula',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -563,7 +564,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-csrc',
-                                                            theme: 'panda-syntax',
+                                                            theme: 'dracula',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -581,7 +582,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-java',
-                                                            theme: 'panda-syntax',
+                                                            theme: 'dracula',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -599,7 +600,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/ecmascript',
-                                                            theme: 'panda-syntax',
+                                                            theme: 'dracula',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -617,7 +618,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-pascal',
-                                                            theme: 'panda-syntax',
+                                                            theme: 'dracula',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -635,7 +636,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-ruby',
-                                                            theme: 'panda-syntax',
+                                                            theme: 'dracula',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -653,7 +654,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-php',
-                                                            theme: 'panda-syntax',
+                                                            theme: 'dracula',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
@@ -671,7 +672,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
                                                         className="flex-grow text-base"
                                                         options={{
                                                             mode: 'text/x-perl',
-                                                            theme: 'panda-syntax',
+                                                            theme: 'dracula',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
                                                             lineWrapping: true,
