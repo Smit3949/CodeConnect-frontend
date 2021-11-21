@@ -4,6 +4,7 @@ import { Controlled as CodeMirror } from 'react-codemirror2';
 import ReactGA from 'react-ga';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
+import 'codemirror/theme/panda-syntax.css';
 import 'codemirror/mode/htmlmixed/htmlmixed';
 import 'codemirror/mode/css/css';
 import 'codemirror/mode/javascript/javascript';
