@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import IDE from "./components/IDE";
 // import { Login, Logout } from "./components/auth/Auth0";
 import { useAuth0 } from '@auth0/auth0-react'
-import { Tooltip } from "@chakra-ui/react"
+import { Tooltip, Avatar } from "@chakra-ui/react"
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { v4 as uuidV4 } from 'uuid';
@@ -208,8 +208,24 @@ function App() {
 
 export default App;
 
-function Header({ runCode, toggleModal, isAuthenticated, userInfo, isInputBoxShown, setisInputBoxShown }) {
+function Header({ runCode, toggleModal, isAuthenticated, isInputBoxShown, setisInputBoxShown }) {
   const [toolTip, showToolTip] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+  const [isUserPresent, setIsUserPresent] = useState(false);
+
+  useEffect(() => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      setUserInfo(user);
+      if (user) {
+        setIsUserPresent(true);
+      }
+      else setIsUserPresent(false);
+    }
+    catch (e) {
+      setIsUserPresent(false);
+    }
+  }, [])
 
   const toggleInputBox = () => {
     ReactGA.event({
@@ -224,7 +240,7 @@ function Header({ runCode, toggleModal, isAuthenticated, userInfo, isInputBoxSho
       <div className="flex items-center">
         <div className="h-7 flex items-center font-medium text-xl codeFont text-orange-standard">
           <img className="h-full" src={'./logo.png'} alt="codeconnect logo" />
-          <span className="ml-2">CodeColab</span>
+          <span className="ml-2">CodeConnect</span>
         </div>
       </div>
       <div className="flex items-center">
@@ -245,6 +261,12 @@ function Header({ runCode, toggleModal, isAuthenticated, userInfo, isInputBoxSho
             <Logout /> :
             <Login />
         } */}
+        {
+          isUserPresent &&
+          <Tooltip label={userInfo.email} hasArrow fontSize="sm" bg="teal.900">
+            <Avatar size="sm" name={userInfo.name} src={userInfo.picture} />
+          </Tooltip>
+        }
         <div className="mx-1 relative">
           {
             isAuthenticated &&
