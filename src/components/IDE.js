@@ -603,7 +603,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                                                         }
                                                         className="flex-grow text-base"
                                                         options={{
-                                                            mode: 'javascript',
+                                                            mode: 'text/ecmascript',
                                                             theme: 'material',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
@@ -621,7 +621,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                                                         }
                                                         className="flex-grow text-base"
                                                         options={{
-                                                            mode: 'pascal',
+                                                            mode: 'text/x-pascal',
                                                             theme: 'material',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
@@ -639,7 +639,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                                                         }
                                                         className="flex-grow text-base"
                                                         options={{
-                                                            mode: 'ruby',
+                                                            mode: 'text/x-ruby',
                                                             theme: 'material',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
@@ -657,7 +657,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                                                         }
                                                         className="flex-grow text-base"
                                                         options={{
-                                                            mode: 'php',
+                                                            mode: 'text/x-php',
                                                             theme: 'material',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
@@ -675,7 +675,7 @@ export default function IDE({ docId, modal, toggleModal, python, setpython, inpu
                                                         }
                                                         className="flex-grow text-base"
                                                         options={{
-                                                            mode: 'perl',
+                                                            mode: 'text/x-perl',
                                                             theme: 'material',
                                                             lineNumbers: true,
                                                             scrollbarStyle: null,
