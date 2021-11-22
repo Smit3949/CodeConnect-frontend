@@ -1,22 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600;700&display=swap');
-@import url('https://unpkg.com/firacode@1.205.0/distr/fira_code.css');
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600;700&display=swap");
+@import url("https://unpkg.com/firacode@1.205.0/distr/fira_code.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body,html{
+body,
+html {
   overflow: hidden;
 }
-
-.codeFont{
-  font-family: 'Fira Code';
+.CodeMirror * {
+  font-family: "Fira Code", monospace;
 }
 
 .playground {
   height: 100%;
   background-color: #1e1e25;
 }
-
 
 .code-editor {
   height: 33%;
@@ -53,12 +52,12 @@ body,html{
   width: 180px;
 }
 
-video{
+video {
   height: 180px !important;
   width: 180px;
   object-fit: cover;
   border-radius: 0.5rem;
-  box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* resizable panels */
@@ -74,7 +73,6 @@ video{
   border: 1px solid gray;
 }
 .panel:first-child {
-
 }
 
 .resizer {
@@ -84,10 +82,10 @@ video{
   position: relative;
   cursor: row-resize;
   flex-shrink: 0;
-  -webkit-user-select: none;  /* Chrome all / Safari all */
-  -moz-user-select: none;     /* Firefox all */
-  -ms-user-select: none;      /* IE 10+ */
-  user-select: none;          /* Likely future */ 
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Likely future */
 }
 
 .resizer::after,
@@ -106,67 +104,65 @@ video{
   left: 0;
 }
 
-
 /* override classes */
-.CodeMirror{
+.CodeMirror {
   height: 100% !important;
 }
 
-.video-off{
+.video-off {
   position: relative;
   height: 180px;
   width: 180px;
   background-color: #333;
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
-.video-off video{
+.video-off video {
   z-index: -1;
 }
 
-.video-off:before{
-    content: ""; 
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #333;
-    opacity: 1;
-    border-radius: 0.35rem;
+.video-off:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+  opacity: 1;
+  border-radius: 0.35rem;
 }
 
-.video-off:after{
-    content: ""; 
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70%;
-    height: 70%;
-    background-image: url("https://source.boringavatars.com/beam/?colors=16cff7,EE9B00,0a6ab4,c8d8d7,e76f51");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-color: #333;
-    opacity: .7;
-    border-radius: 0.35rem;
+.video-off:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  background-image: url("https://source.boringavatars.com/beam/?colors=16cff7,EE9B00,0a6ab4,c8d8d7,e76f51");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #333;
+  opacity: 0.7;
+  border-radius: 0.35rem;
 }
 
 .custom-shadow {
-  box-shadow: 0px 5px 20px rgba(0,0,0,0.7);
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.7);
 }
 
 .custom-shadow-medium {
-  box-shadow: 0px 2px 4px rgba(0,0,0,0.4);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .custom-shadow-light {
-  box-shadow: 0px 5px 8px rgba(0,0,0,0.6);
+  box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.6);
 }
 
-
-.video-grid-height{
+.video-grid-height {
   height: calc(100vh - 150px);
 }
