@@ -420,9 +420,11 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
 
         const drawLine = (x0, y0, x1, y1, color, width, emit) => {
             context.beginPath();
+            context.strokeStyle = color;
             context.moveTo(x0, y0);
             context.lineTo(x1, y1);
-            context.strokeStyle = color;
+            console.log(color);
+            console.log(context.strokeStyle);
             context.lineWidth = width;
             context.stroke();
             context.closePath();
@@ -432,13 +434,15 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
             const h = canvas.height;
             // console.log(w, h, window.width, window.height);
 
-
+            
+            setPencilColor(current.color);
+           
             socket.emit('drawing', {
                 x0: x0 / w,
                 y0: y0 / h,
                 x1: x1 / w,
                 y1: y1 / h,
-                pencilColor,
+                color: current.color,
                 width
             });
         };
@@ -500,6 +504,7 @@ export default function IDE({ docId, modal, toggleModal, cpp, setcpp, java, setj
         const onDrawingEvent = (data) => {
             const w = canvas.width;
             const h = canvas.height;
+            console.log(data.color);
             drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color, data.width);
         }
         socket.on('drawing', onDrawingEvent);
