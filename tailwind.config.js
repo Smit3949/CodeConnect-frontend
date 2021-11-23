@@ -17,6 +17,7 @@ module.exports = {
         'theme-orange': '#cd8951',
         'theme-grey': '#c8d8d7',
         'theme-dark-purple': '#1A202C',
+        'purple-6': '#753188'
       },
       padding: {
         "54": '260px',

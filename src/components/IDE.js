@@ -754,8 +754,8 @@ function RightVideoPanel({ muteCam, muteMic }) {
 
     return (
         <div style={{ height: "calc(100vh - 47px)" }} className="overflow-hidden duration-300 bg-transparent px-2 pt-2 pb-3 flex flex-col items-center justify-start">
-            <div className="flex overflow-hidden custom-shadow-light h-full rounded-lg justify-start items-center flex-col  bg-teal-standard bg-opacity-100 relative pt-2 px-2 shadow-lg">
-                <Tag size={"md"} variant="solid" w="full" colorScheme="teal">
+            <div className="flex overflow-hidden custom-shadow-light h-full rounded-lg justify-start items-center flex-col bg-gradient-to-br from-purple-standard via-purple-dark to-theme-orange bg-opacity-100 relative pt-2 px-2 shadow-lg">
+                <Tag size={"md"} variant="solid" w="full" colorScheme="#EE9B00">
                     People in room
                 </Tag>
                 <div className="justify-between flex-col pt-2 pb-3">
