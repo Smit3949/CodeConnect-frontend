@@ -8,6 +8,7 @@ body,
 html {
   overflow: hidden;
 }
+
 .CodeMirror * {
   font-family: "Fira Code", monospace;
   font-size: 20px;
