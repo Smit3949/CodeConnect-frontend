@@ -584,14 +584,16 @@ export default function IDE({
     reader.readAsText(file);
   };
 
-  const aWithHref = document.querySelectorAll("a[href]");
-  aWithHref.forEach((a) => {
-    if (
-      a.getAttribute("href") === "https://codeium.com?referrer=codeium-editor"
-    ) {
-      a.remove();
-    }
-  });
+  const removeCodeiumIcon = () => {
+    const aWithHref = document.querySelectorAll("a[href]");
+    aWithHref.forEach((a) => {
+      if (
+        a.getAttribute("href") === "https://codeium.com?referrer=codeium-editor"
+      ) {
+        a.remove();
+      }
+    });
+  };
 
   return (
     <>
@@ -625,21 +627,10 @@ export default function IDE({
                             onChange={(value) => {
                               setpython(value);
                             }}
+                            beforeMount={removeCodeiumIcon}
                             className="flex-grow text-base"
                             defaultValue={python}
                             theme="vs-dark"
-                            // value={python}
-                            // className="flex-grow text-base"
-                            // options={{
-                            //   mode: "python",
-                            //   theme: "dracula",
-                            //   lineNumbers: true,
-                            //   scrollbarStyle: null,
-                            //   lineWrapping: true,
-                            // }}
-                            // onBeforeChange={(editor, data, changes) => {
-                            //   setpython(changes);
-                            // }}
                           />
                         )}
                         {selected === "cpp" && (
@@ -649,6 +640,7 @@ export default function IDE({
                             onChange={(value) => {
                               setcpp(value);
                             }}
+                            beforeMount={removeCodeiumIcon}
                             className="flex-grow text-base"
                             defaultValue={cpp}
                             theme="vs-dark"
@@ -661,6 +653,7 @@ export default function IDE({
                             onChange={(value) => {
                               setjava(value);
                             }}
+                            beforeMount={removeCodeiumIcon}
                             className="flex-grow text-base"
                             defaultValue={java}
                             theme="vs-dark"
@@ -673,6 +666,7 @@ export default function IDE({
                             onChange={(value) => {
                               setjs(value);
                             }}
+                            beforeMount={removeCodeiumIcon}
                             className="flex-grow text-base"
                             defaultValue={js}
                             theme="vs-dark"
@@ -685,6 +679,7 @@ export default function IDE({
                             onChange={(value) => {
                               setruby(value);
                             }}
+                            beforeMount={removeCodeiumIcon}
                             className="flex-grow text-base"
                             defaultValue={ruby}
                             theme="vs-dark"
@@ -697,6 +692,7 @@ export default function IDE({
                             onChange={(value) => {
                               setphp(value);
                             }}
+                            beforeMount={removeCodeiumIcon}
                             className="flex-grow text-base"
                             defaultValue={php}
                             theme="vs-dark"
@@ -709,6 +705,7 @@ export default function IDE({
                             onChange={(value) => {
                               setperl(value);
                             }}
+                            beforeMount={removeCodeiumIcon}
                             className="flex-grow text-base"
                             defaultValue={perl}
                             theme="vs-dark"
