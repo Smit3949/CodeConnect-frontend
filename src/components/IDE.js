@@ -16,6 +16,7 @@ import "codemirror/mode/pascal/pascal";
 import "codemirror/mode/perl/perl";
 import "codemirror/mode/php/php";
 import "codemirror/mode/ruby/ruby";
+import { CodeiumEditor } from "@codeium/react-code-editor";
 
 import Peer from "peerjs";
 import closeIcon from "../images/icons/close.png";
@@ -583,6 +584,15 @@ export default function IDE({
     reader.readAsText(file);
   };
 
+  const aWithHref = document.querySelectorAll("a[href]");
+  aWithHref.forEach((a) => {
+    if (
+      a.getAttribute("href") === "https://codeium.com?referrer=codeium-editor"
+    ) {
+      a.remove();
+    }
+  });
+
   return (
     <>
       <div className="flex">
@@ -609,131 +619,99 @@ export default function IDE({
                           />
                         </div>
                         {selected === "python" && (
-                          <CodeMirror
-                            value={python}
+                          <CodeiumEditor
+                            height={"100%"}
+                            language="python"
+                            onChange={(value) => {
+                              setpython(value);
+                            }}
                             className="flex-grow text-base"
-                            options={{
-                              mode: "python",
-                              theme: "dracula",
-                              lineNumbers: true,
-                              scrollbarStyle: null,
-                              lineWrapping: true,
-                            }}
-                            onBeforeChange={(editor, data, changes) => {
-                              setpython(changes);
-                            }}
+                            defaultValue={python}
+                            theme="vs-dark"
+                            // value={python}
+                            // className="flex-grow text-base"
+                            // options={{
+                            //   mode: "python",
+                            //   theme: "dracula",
+                            //   lineNumbers: true,
+                            //   scrollbarStyle: null,
+                            //   lineWrapping: true,
+                            // }}
+                            // onBeforeChange={(editor, data, changes) => {
+                            //   setpython(changes);
+                            // }}
                           />
                         )}
                         {selected === "cpp" && (
-                          <CodeMirror
-                            value={cpp}
+                          <CodeiumEditor
+                            height={"100%"}
+                            language="cpp"
+                            onChange={(value) => {
+                              setcpp(value);
+                            }}
                             className="flex-grow text-base"
-                            options={{
-                              mode: "text/x-csrc",
-                              theme: "dracula",
-                              lineNumbers: true,
-                              scrollbarStyle: null,
-                              lineWrapping: true,
-                            }}
-                            onBeforeChange={(editor, data, changes) => {
-                              setcpp(changes);
-                            }}
+                            defaultValue={cpp}
+                            theme="vs-dark"
                           />
                         )}
                         {selected === "java" && (
-                          <CodeMirror
-                            value={java}
+                          <CodeiumEditor
+                            height={"100%"}
+                            language="java"
+                            onChange={(value) => {
+                              setjava(value);
+                            }}
                             className="flex-grow text-base"
-                            options={{
-                              mode: "text/x-java",
-                              theme: "dracula",
-                              lineNumbers: true,
-                              scrollbarStyle: null,
-                              lineWrapping: true,
-                            }}
-                            onBeforeChange={(editor, data, changes) => {
-                              setjava(changes);
-                            }}
+                            defaultValue={java}
+                            theme="vs-dark"
                           />
                         )}
                         {selected === "javascript" && (
-                          <CodeMirror
-                            value={js}
+                          <CodeiumEditor
+                            height={"100%"}
+                            language="javascript"
+                            onChange={(value) => {
+                              setjs(value);
+                            }}
                             className="flex-grow text-base"
-                            options={{
-                              mode: "text/ecmascript",
-                              theme: "dracula",
-                              lineNumbers: true,
-                              scrollbarStyle: null,
-                              lineWrapping: true,
-                            }}
-                            onBeforeChange={(editor, data, changes) => {
-                              setjs(changes);
-                            }}
-                          />
-                        )}
-                        {selected === "pascal" && (
-                          <CodeMirror
-                            value={pascal}
-                            className="flex-grow text-base"
-                            options={{
-                              mode: "text/x-pascal",
-                              theme: "dracula",
-                              lineNumbers: true,
-                              scrollbarStyle: null,
-                              lineWrapping: true,
-                            }}
-                            onBeforeChange={(editor, data, changes) => {
-                              setpascal(changes);
-                            }}
+                            defaultValue={js}
+                            theme="vs-dark"
                           />
                         )}
                         {selected === "ruby" && (
-                          <CodeMirror
-                            value={ruby}
+                          <CodeiumEditor
+                            height={"100%"}
+                            language="ruby"
+                            onChange={(value) => {
+                              setruby(value);
+                            }}
                             className="flex-grow text-base"
-                            options={{
-                              mode: "text/x-ruby",
-                              theme: "dracula",
-                              lineNumbers: true,
-                              scrollbarStyle: null,
-                              lineWrapping: true,
-                            }}
-                            onBeforeChange={(editor, data, changes) => {
-                              setruby(changes);
-                            }}
+                            defaultValue={ruby}
+                            theme="vs-dark"
                           />
                         )}
                         {selected === "php" && (
-                          <CodeMirror
-                            value={php}
+                          <CodeiumEditor
+                            height={"100%"}
+                            language="php"
+                            onChange={(value) => {
+                              setphp(value);
+                            }}
                             className="flex-grow text-base"
-                            options={{
-                              mode: "text/x-php",
-                              theme: "dracula",
-                              lineNumbers: true,
-                              scrollbarStyle: null,
-                              lineWrapping: true,
-                            }}
-                            onBeforeChange={(editor, data, changes) => {
-                              setphp(changes);
-                            }}
+                            defaultValue={php}
+                            theme="vs-dark"
                           />
                         )}
                         {selected === "perl" && (
-                          <CodeMirror
-                            value={perl}
+                          <CodeiumEditor
+                            height={"100%"}
+                            language="perl"
+                            onChange={(value) => {
+                              setperl(value);
+                            }}
                             className="flex-grow text-base"
-                            options={{
-                              mode: "text/x-perl",
-                              theme: "dracula",
-                              lineNumbers: true,
-                              scrollbarStyle: null,
-                              lineWrapping: true,
-                            }}
-                            onBeforeChange={(editor, data, changes) => {
-                              setperl(changes);
-                            }}
+                            defaultValue={perl}
+                            theme="vs-dark"
                           />
                         )}
                       </div>
@@ -965,9 +943,6 @@ function LanguageSelector({ language, setLanguage }) {
       </option>
       <option className="bg-theme-dark-blue" value="ruby">
         ruby
-      </option>
-      <option className="bg-theme-dark-blue" value="pascal">
-        pascal
       </option>
     </select>
   );

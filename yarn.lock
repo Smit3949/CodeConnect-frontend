@@ -1170,6 +1170,53 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@bufbuild/buf-darwin-arm64@1.28.1":
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-darwin-arm64/-/buf-darwin-arm64-1.28.1.tgz#ffe09c8b998d6cc714ab525999fe026b25c952e9"
+  integrity sha512-nAyvwKkcd8qQTExCZo5MtSRhXLK7e3vzKFKHjXfkveRakSUST2HFlFZAHfErZimN4wBrPTN0V0hNRU8PPjkMpQ==
+
+"@bufbuild/buf-darwin-x64@1.28.1":
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-darwin-x64/-/buf-darwin-x64-1.28.1.tgz#03aa18f7961b651679e349a382f71f1bad3dadec"
+  integrity sha512-b0eT3xd3vX5a5lWAbo5h7FPuf9MsOJI4I39qs4TZnrlZ8BOuPfqzwzijiFf9UCwaX2vR1NQXexIoQ80Ci+fCHw==
+
+"@bufbuild/buf-linux-aarch64@1.28.1":
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-linux-aarch64/-/buf-linux-aarch64-1.28.1.tgz#2af0683dd6a803bdaba7ea92148007393a058705"
+  integrity sha512-p5h9bZCVLMh8No9/7k7ulXzsFx5P7Lu6DiUMjSJ6aBXPMYo6Xl7r/6L2cQkpsZ53HMtIxCgMYS9a7zoS4K8wIw==
+
+"@bufbuild/buf-linux-x64@1.28.1":
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-linux-x64/-/buf-linux-x64-1.28.1.tgz#dbac29d39fb4c0a509ebf49fb3a76d481aebe1e0"
+  integrity sha512-fVJ3DiRigIso06jgEl+JNp59Y5t2pxDHd10d3SA4r+14sXbZ2J7Gy/wBqVXPry4x/jW567KKlvmhg7M5ZBgCQQ==
+
+"@bufbuild/buf-win32-arm64@1.28.1":
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-win32-arm64/-/buf-win32-arm64-1.28.1.tgz#69242d904c73368c2735aa9efc338dd1f5864bfa"
+  integrity sha512-KJiRJpugQRK/jXC46Xjlb68UydWhCZj2jHdWLIwNtgXd1WTJ3LngChZV7Y6pPK08pwBAVz0JYeVbD5IlTCD4TQ==
+
+"@bufbuild/buf-win32-x64@1.28.1":
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf-win32-x64/-/buf-win32-x64-1.28.1.tgz#5014fd87ed29fd26c1c6d2e97eba9ac7b8a14e51"
+  integrity sha512-vMnc+7OVCkmlRWQsgYHgUqiBPRIjD8XeoRyApJ07YZzGs7DkRH4LhvmacJbLd3wORylbn6gLz3pQa8J/M61mzg==
+
+"@bufbuild/buf@1.28.1":
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/@bufbuild/buf/-/buf-1.28.1.tgz#b107bd1b01a676040b1112de9eb94642bea48a08"
+  integrity sha512-WRDagrf0uBjfV9s5eyrSPJDcdI4A5Q7JMCA4aMrHRR8fo/TTjniDBjJprszhaguqsDkn/LS4QIu92HVFZCrl9A==
+  optionalDependencies:
+    "@bufbuild/buf-darwin-arm64" "1.28.1"
+    "@bufbuild/buf-darwin-x64" "1.28.1"
+    "@bufbuild/buf-linux-aarch64" "1.28.1"
+    "@bufbuild/buf-linux-x64" "1.28.1"
+    "@bufbuild/buf-win32-arm64" "1.28.1"
+    "@bufbuild/buf-win32-x64" "1.28.1"
+
+"@bufbuild/protobuf@1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-1.4.2.tgz#dc4faf21264a47b71a15806616043cb006e80ac8"
+  integrity sha512-JyEH8Z+OD5Sc2opSg86qMHn1EM1Sa+zj/Tc0ovxdwk56ByVNONJSabuCUbLQp+eKN3rWNfrho0X+3SEqEPXIow==
+
 "@chakra-ui/accordion@1.3.6":
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/@chakra-ui/accordion/-/accordion-1.3.6.tgz#9ebbcec4d1871ab79bdac84187246ce1d34c8d8a"
@@ -1724,6 +1771,28 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@codeium/react-code-editor@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@codeium/react-code-editor/-/react-code-editor-1.0.12.tgz#d806769f95f4db9814620222c2505ac03e63cfe1"
+  integrity sha512-ps0J00jGBs/mhr1R9u+UTW+uK/6ba0WhCr2qYr7M9/w4ZQQXYmiZ3zniZwJGAhle69y5AE7SiUTVWZK7BU/4UA==
+  dependencies:
+    "@bufbuild/buf" "1.28.1"
+    "@bufbuild/protobuf" "1.4.2"
+    "@connectrpc/connect" "1.1.3"
+    "@connectrpc/connect-web" "1.1.3"
+    "@monaco-editor/react" "^4.6.0"
+    dotenv "^16.3.1"
+
+"@connectrpc/connect-web@1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@connectrpc/connect-web/-/connect-web-1.1.3.tgz#027922b4f1537ecb1eaaa31ec3a59dd471a65320"
+  integrity sha512-WfShOZt91duJngqivYF4wJFRbeRa4bF/fPMfDVN0MAYSX3VuaTMn8o9qgKN7tsg2H2ZClyOVQwMkZx6IdcP7Zw==
+
+"@connectrpc/connect@1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@connectrpc/connect/-/connect-1.1.3.tgz#6099789e392bf3d4c3d831f294b1a9ff969703a1"
+  integrity sha512-AXkbsLQe2Nm7VuoN5nqp05GEb9mPa/f5oFzDqTbHME4i8TghTrlY03uefbhuAq4wjsnfDnmuxHZvn6ndlgXmbg==
+
 "@craco/craco@^6.2.0":
   version "6.2.0"
   resolved "https://registry.npmjs.org/@craco/craco/-/craco-6.2.0.tgz"
@@ -2117,6 +2186,20 @@
     "@types/node" "*"
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
+
+"@monaco-editor/loader@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/loader/-/loader-1.4.0.tgz#f08227057331ec890fa1e903912a5b711a2ad558"
+  integrity sha512-00ioBig0x642hytVspPl7DbQyaSWRaolYie/UFNjoTdvoKPzo6xrXLhTk9ixgIKcLH5b5vDOjVNiGyY+uDCUlg==
+  dependencies:
+    state-local "^1.0.6"
+
+"@monaco-editor/react@^4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-4.6.0.tgz#bcc68671e358a21c3814566b865a54b191e24119"
+  integrity sha512-RFkU9/i7cN2bsq/iTkurMWOEErmYcY6JiQI3Jn+WeR/FGISH8JbHERjpS9oRuSOPvDMJI0Z8nJeKkbOs9sBYQw==
+  dependencies:
+    "@monaco-editor/loader" "^1.4.0"
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
@@ -5129,6 +5212,11 @@ dotenv@8.2.0:
   version "8.2.0"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-8.2.0.tgz"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
+
+dotenv@^16.3.1:
+  version "16.4.5"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
+  integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
 
 duplexer@^0.1.1:
   version "0.1.2"
@@ -11561,6 +11649,11 @@ stackframe@^1.1.1:
   version "1.2.0"
   resolved "https://registry.npmjs.org/stackframe/-/stackframe-1.2.0.tgz"
   integrity sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
+
+state-local@^1.0.6:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/state-local/-/state-local-1.0.7.tgz#da50211d07f05748d53009bee46307a37db386d5"
+  integrity sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==
 
 static-extend@^0.1.1:
   version "0.1.2"

@@ -5,6 +5,7 @@
   "dependencies": {
     "@auth0/auth0-react": "^1.6.0",
     "@chakra-ui/react": "^1.6.7",
+    "@codeium/react-code-editor": "^1.0.12",
     "@craco/craco": "^6.2.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
@@ -49,9 +50,9 @@
       "not op_mini all"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ]
   },
   "devDependencies": {
